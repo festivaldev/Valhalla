@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<title>TEST</title>
+		<script src="js/socket.io.js"></script>
+		<style>
+			* {
+				box-sizing: border-box;
+			}
+			div.status {
+				background-color: #000;
+				padding: 10px;
+				position: absolute;
+			}
+
+			div.status.no-connection,
+			div.status.connection-closed {
+				color: #f00;
+				box-shadow: inset 0 0 0 2px #f00;
+			}
+
+			div.status.waiting {
+				color: #ff9500;
+				box-shadow: inset 0 0 0 2px #ff9500;
+			}
+
+			div.status.connected {
+				color: #0f0;
+				box-shadow: inset 0 0 0 2px #0f0;
+			}
+		</style>
+	</head>
+	<body>
+		<input type="text" placeholder="IP">
+		<button>Connect</button>
+		
+		<p class="status">No Connection</p>
+
+		<script>
+			var socket;
+			document.querySelector("button").addEventListener("click", function() {
+				if (socket) {
+					if (socket._connectTimer) {
+						clearTimeout(socket._connectTimer);
+					}
+					socket.close();
+					socket = undefined;
+
+					document.querySelector("button").innerHTML = "Connect";
+					return;
+				}
+
+				socket = io(document.querySelector("input").value);
+
+				socket._connectTimer = setTimeout(function() {
+					socket.close();
+					socket = undefined;
+
+					document.querySelector("p.status").innerHTML = "Connection failed";
+
+					document.querySelector("input").disabled = false;
+					document.querySelector("button").disabled = false;
+				}, 5000);
+
+				document.querySelector("p.status").innerHTML = "Waiting for connection...";
+
+				document.querySelector("input").disabled = true;
+				document.querySelector("button").disabled = true;
+
+				socket.on('connect', function() {
+					if (socket._connectTimer) {
+						clearTimeout(socket._connectTimer);
+					}
+					document.querySelector("p.status").innerHTML = "Connected";
+					document.querySelector("button").innerHTML = "Disconnect";
+					document.querySelector("button").disabled = false;
+				});
+
+				socket.on('disconnect', function () {
+					document.querySelector("p.status").innerHTML = "No Connection";
+					document.querySelector("button").innerHTML = "Connect";
+					document.querySelector("input").disabled = false;
+				});
+			});
+		</script>
+	</body>
+</html>

@@ -1,0 +1,23 @@
+{
+  "name": "valhalla",
+  "version": "1.0.0",
+  "description": "FESTIVAL's attempt at recreating Cards Against Humanity for the web and expand it with other game modules",
+  "main": "server/server.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/festivaldev/Valhalla.git"
+  },
+  "author": "FESTIVAL",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/festivaldev/Valhalla/issues"
+  },
+  "homepage": "https://github.com/festivaldev/Valhalla#readme",
+  "dependencies": {
+    "express": "^4.16.2",
+    "socket.io": "^2.0.4"
+  }
+}
