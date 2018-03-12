@@ -70,19 +70,6 @@
 					"reconnectionAttempts": 5
 				});
 
-				var sockets = [];
-				for (var i=1; i<10000; i++) {
-					sockets.push(io("http://" + location.hostname + ":8080", {
-						secure: true,
-						multiplex: false,
-						"force new connection": true,
-						query: "username=" + name + i,
-						"reconnectionDelay": 1000,
-						"reconnectionDelayMax": 1000,
-						"reconnectionAttempts": 5
-					}));
-				}
-
 				socket._connectTimer = setTimeout(function() {
 					socket.close();
 					socket = undefined;
