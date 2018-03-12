@@ -1,0 +1,6 @@
+{
+	"server": {
+		"maxPlayers": 100,
+		"maxGames": 20
+	}
+}

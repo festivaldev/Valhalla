@@ -2,6 +2,7 @@
 <html>
 	<head>
 		<title>TEST</title>
+		<meta charset="utf8">
 		<script src="js/socket.io.js"></script>
 		<style>
 			* {
@@ -31,13 +32,16 @@
 		</style>
 	</head>
 	<body>
-		<input type="text" placeholder="IP">
+		<input id="ip" type="text" placeholder="IP" disabled>
+		<input id="username" type="text" placeholder="Username">
 		<button>Connect</button>
 		
 		<p class="status">No Connection</p>
 
 		<script>
 			var socket;
+
+			document.querySelector("input#ip").value = location.host + ":8080";
 			document.querySelector("button").addEventListener("click", function() {
 				if (socket) {
 					if (socket._connectTimer) {
@@ -50,36 +54,61 @@
 					return;
 				}
 
-				socket = io(document.querySelector("input").value);
+				var name = document.querySelector("input#username").value;
+
+				if (name.length < 1) {
+					return;
+				}
+
+				socket = io("http://" + location.hostname + ":8080", {
+					secure: true,
+					multiplex: false,
+					"force new connection": true,
+					query: "username=" + name,
+					"reconnectionDelay": 1000,
+					"reconnectionDelayMax": 1000,
+					"reconnectionAttempts": 5
+				});
+
+				var sockets = [];
+				for (var i=1; i<10000; i++) {
+					sockets.push(io("http://" + location.hostname + ":8080", {
+						secure: true,
+						multiplex: false,
+						"force new connection": true,
+						query: "username=" + name + i,
+						"reconnectionDelay": 1000,
+						"reconnectionDelayMax": 1000,
+						"reconnectionAttempts": 5
+					}));
+				}
 
 				socket._connectTimer = setTimeout(function() {
 					socket.close();
 					socket = undefined;
 
 					document.querySelector("p.status").innerHTML = "Connection failed";
-
-					document.querySelector("input").disabled = false;
 					document.querySelector("button").disabled = false;
 				}, 5000);
 
 				document.querySelector("p.status").innerHTML = "Waiting for connection...";
-
-				document.querySelector("input").disabled = true;
 				document.querySelector("button").disabled = true;
 
-				socket.on('connect', function() {
+				socket.on("connect", function() {
 					if (socket._connectTimer) {
 						clearTimeout(socket._connectTimer);
 					}
-					document.querySelector("p.status").innerHTML = "Connected";
+					document.querySelector("p.status").innerHTML = "Connected as " + name;
 					document.querySelector("button").innerHTML = "Disconnect";
 					document.querySelector("button").disabled = false;
 				});
 
-				socket.on('disconnect', function () {
+				socket.on("disconnect", function () {
+					socket.close();
+					socket = undefined;
+
 					document.querySelector("p.status").innerHTML = "No Connection";
 					document.querySelector("button").innerHTML = "Connect";
-					document.querySelector("input").disabled = false;
 				});
 			});
 		</script>
