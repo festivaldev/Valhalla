@@ -1,103 +1,16 @@
 <!DOCTYPE html>
-<html>
+<html ng-app="Valhalla">
 	<head>
-		<title>TEST</title>
+		<title>Valhalla</title>
 		<meta charset="utf8">
+
 		<script src="js/socket.io.js"></script>
-		<style>
-			* {
-				box-sizing: border-box;
-			}
-			div.status {
-				background-color: #000;
-				padding: 10px;
-				position: absolute;
-			}
+		<script src="js/angular.min.js"></script>
+		<script src="js/angular-route.min.js"></script>
 
-			div.status.no-connection,
-			div.status.connection-closed {
-				color: #f00;
-				box-shadow: inset 0 0 0 2px #f00;
-			}
-
-			div.status.waiting {
-				color: #ff9500;
-				box-shadow: inset 0 0 0 2px #ff9500;
-			}
-
-			div.status.connected {
-				color: #0f0;
-				box-shadow: inset 0 0 0 2px #0f0;
-			}
-		</style>
+		<link rel="stylesheet" href="css/style.css">
 	</head>
-	<body>
-		<input id="ip" type="text" placeholder="IP" disabled>
-		<input id="username" type="text" placeholder="Username">
-		<button>Connect</button>
-		
-		<p class="status">No Connection</p>
-
-		<script>
-			var socket;
-
-			document.querySelector("input#ip").value = location.host + ":8080";
-			document.querySelector("button").addEventListener("click", function() {
-				if (socket) {
-					if (socket._connectTimer) {
-						clearTimeout(socket._connectTimer);
-					}
-					socket.close();
-					socket = undefined;
-
-					document.querySelector("button").innerHTML = "Connect";
-					return;
-				}
-
-				var name = document.querySelector("input#username").value;
-
-				if (name.length < 1) {
-					return;
-				}
-
-				socket = io("http://" + location.hostname + ":8080", {
-					secure: true,
-					multiplex: false,
-					"force new connection": true,
-					query: "username=" + name,
-					"reconnectionDelay": 1000,
-					"reconnectionDelayMax": 1000,
-					"reconnectionAttempts": 5
-				});
-
-				socket._connectTimer = setTimeout(function() {
-					socket.close();
-					socket = undefined;
-
-					document.querySelector("p.status").innerHTML = "Connection failed";
-					document.querySelector("button").disabled = false;
-				}, 5000);
-
-				document.querySelector("p.status").innerHTML = "Waiting for connection...";
-				document.querySelector("button").disabled = true;
-
-				socket.on("connect", function() {
-					if (socket._connectTimer) {
-						clearTimeout(socket._connectTimer);
-					}
-					document.querySelector("p.status").innerHTML = "Connected as " + name;
-					document.querySelector("button").innerHTML = "Disconnect";
-					document.querySelector("button").disabled = false;
-				});
-
-				socket.on("disconnect", function () {
-					socket.close();
-					socket = undefined;
-
-					document.querySelector("p.status").innerHTML = "No Connection";
-					document.querySelector("button").innerHTML = "Connect";
-				});
-			});
-		</script>
+	<body ng-view ng-controller="MainViewController">
+		<script src="js/app.js"></script>
 	</body>
 </html>

@@ -33,6 +33,14 @@ var User = function (_username, _socketId, _isAdmin) {
 		currentGame = game;
 	}
 
+	user.getClientInfo = function() {
+		return {
+			username: username,
+			currentGame: null,
+			isAdmin: isAdmin
+		}
+	}
+
 	return user;
 }
 

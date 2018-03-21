@@ -1,0 +1,25 @@
+.tab-controller {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	transition: transform .4s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+	.tab {
+		position: absolute;
+		top: 0;
+		width: 100%;
+		height: 100%;
+
+		.tab-positions(@i: 0) when (@i < 10) {
+			@index: @i + 1;
+			&:nth-child(@{index}) {
+				left: (100% * @i);  
+			}
+			.tab-positions(@i + 1);
+		}
+
+		.tab-positions();
+	}
+}

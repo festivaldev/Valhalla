@@ -1,0 +1,13 @@
+<div class="login-wrapper">
+	<img class="logo" src="img/logo.png">
+
+	<ng-form name="loginForm">
+		<div class="input-wrapper">
+			<input type="text" name="ip" placeholder="Host" ng-model="hostname" disabled>
+			<input type="text" name="username" placeholder="Username" ng-model="username" ng-disabled="isConnecting || socket.connected"
+			 required autocomplete="off" ng-keydown="inputKeydown($event)">
+		</div>
+		<button class="connect" ng-if="!isConnecting" ng-click="connect()" ng-disabled="!loginForm.$valid || socket.connected">Connect</button>
+		<img class="loading" ng-src="img/loading-circle.svg?{{time}}" ng-if="isConnecting">
+	</ng-form>
+</div>

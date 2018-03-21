@@ -1,7 +1,7 @@
 /**
  * Sets the process title
  */
-process.title = "ValhallaServer";
+process.title = "Valhalla";
 
 /**
  * Adds a C#-like string format method to JavaScript
@@ -35,6 +35,11 @@ var app = require("express")(),
 
 global.app = app;
 
+app.use(function (request, response, next) {
+	response.header("Access-Control-Allow-Origin", "*");
+	next();
+});
+
 /**
  * Load game bundles
  */
@@ -55,7 +60,8 @@ fs.readdirSync(gameBundlePath).forEach(function(file) {
  */
 var Server = require("./Classes/Server"),
 	ConnectedUsers = require("./Classes/ConnectedUsers"),
-	User = require("./Classes/User.js");
+	User = require("./Classes/User.js"),
+	API = require("./api");
 
 global.server = new Server(new ConnectedUsers(), null);
 
@@ -96,10 +102,24 @@ io.on("connection", function(socket) {
 	
 	socket.on("disconnect", function() {
 		var user = server.connectedUsers().getUser(socket.id);
+		server.connectedUsers().removeUser(socket.id);
 		if (!isShuttingDown) {
 			log.info(String.format("User {0} disconnected", user.toString()));
 		}
 	});
+});
+
+/**
+ * API Handlers
+ */
+app.get("/gameBundles", function (req, res) {
+	res.setHeader('Content-Type', 'application/json');
+	res.send(JSON.stringify(API.getAvailableGameBundles(), null, 4));
+});
+
+app.get("/gameList", function(req, res) {
+	res.setHeader('Content-Type', 'application/json');
+	res.send(JSON.stringify(API.getGameList(), null, 4));
 });
 
 /**

@@ -1,0 +1,17 @@
+.page-content {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+	overflow: scroll;
+
+    &:not(.no-padding) {
+        padding: 15px 25px;
+    }
+}
+
+header+.page-content,
+header+.tab-controller {
+    top: 50px;
+}

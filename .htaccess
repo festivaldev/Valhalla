@@ -1,5 +1,5 @@
 RewriteEngine On
 RewriteBase /Valhalla/
 
-RewriteRule ^(css|img|js)/(.*)$ client/$1/$2 [L]
+RewriteRule ^(css|img|js|static)/(.*)$ client/$1/$2 [L]
 RewriteRule ^$ client/$1 [L]

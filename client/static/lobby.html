@@ -1,0 +1,78 @@
+<div class="lobby">
+	<header ng-class="{'expanded': expandHeader}">
+		<div class="exit-button" ng-click="socket.disconnect()"></div>
+		<div class="title">Game Lobby</div>
+
+		<!-- <ul class="nav">
+			<li class="selected">Games</li>
+			<li>Create Game</li>
+			<li>Settings</li>
+		</ul> -->
+
+		<tab-header headers="headers"></tab-header>
+
+		<div class="expand-button" ng-click="expandHeader = !expandHeader"></div>
+	</header>
+
+	<div class="tab-controller">
+		<div class="tab" style="left: 0">
+			<div class="page-content">
+				<div class="games-list">
+					<div class="game" ng-repeat="game in gameList track by $index" ng-click="showGameDetails(game)">
+						<div class="game-content">
+							<p class="title">{{game.gameName}}</p>
+							<p class="info">Game: {{game.gameMode}}</p>
+							<p class="info">{{game.playerCount}} / {{game.maxPlayers}} Players</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="tab">
+			<div class="page-content">
+				<fieldset>
+					<legend>Create Game</legend>
+
+					<label>Game Mode:</label>
+					<select ng-model="gameOptions.currentBundle">
+						<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
+					</select>
+					<br>
+					<label>Player Limit:</label>
+					<select ng-model="gameOptions.playerLimit">
+						<option ng-repeat="n in range(3,20)" value="{{n}}">{{n}}</option>
+					</select>
+					<br>
+					<ng-include ng-if="gameOptions.currentBundle" src="hostname +'/' + gameOptions.currentBundle + '/createGame.html'" />
+				</fieldset>
+				<!-- <ng-form>
+					<label>Game Mode:</label>
+					<select ng-model="currentBundle">
+						<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
+					</select>
+					<br>
+					<label>Player Limit:</label>
+					<select>
+						<option ng-repeat="n in range(3,20)">{{n}}</option>
+					</select>
+					<br>
+					<ng-include ng-if="currentBundle" src="hostname +'/' + currentBundle + '/createGame.html'"></ng-include>
+				</ng-form> -->
+			</div>
+		</div>
+		<div class="tab">
+			<div class="page-content">
+				tab 3
+			</div>
+		</div>
+	</div>
+	
+		<!--  -->
+	<div class="game-detail-overlay" ng-class="{'visible': isShowingGameDetails}"></div>
+	<div class="game-details" ng-class="{'visible':isShowingGameDetails}">
+		<div class="exit-button" ng-click="isShowingGameDetails = false;"></div>
+
+		<p class="game-title">{{game.gameName}}</p>
+		<button class="join-game">Join Game</button>
+	</div>
+</div>

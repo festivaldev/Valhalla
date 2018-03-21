@@ -1,0 +1,227 @@
+@keyframes content-slide-in {
+	from {
+		opacity: 0;
+		transform: translate3d(0, 50px, 0);
+	}
+	to {
+		opacity: 1;
+		transform: translate3d(0,0,0);
+	}
+}
+
+.lobby {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: #fff;
+}
+
+.games-list {
+	font-size: 0;
+	user-select: none;
+	-webkit-user-select: none;
+	-moz-user-select: none;
+	transform-origin: 50vw 50vh;
+	transition: transform .3s cubic-bezier(0.165, 0.84, 0.44, 1);
+
+	&.retracted {
+		transform: scale(0.9);
+	}
+
+	.game {
+		position: relative;
+		margin: 15px;
+		display: inline-block;
+		border-radius: 20px;
+		cursor: pointer;
+		box-shadow: 0 0 0 1px #ccc;
+		transition: transform .1s linear, box-shadow .1s linear;
+
+		&:hover:not(:active) {
+			transform: scale(1.05);
+			box-shadow: 0 0 0 1px #ccc, 1px 26px 22px rgba(0, 0, 0, 0.07);
+		}
+		&:active {
+			transform: scale(1.01);
+			box-shadow: 0 0 0 1px #ccc, 1px 6px 22px rgba(0, 0, 0, 0.07);
+		}
+
+		@media all and (max-width: 413px) {
+			width: calc(~"100% - 30px");
+		}
+		@media all and (min-width: 414px) and (max-width: 767px) {
+			width: calc(~"50% - 30px");
+		}
+		@media all and (min-width: 768px) and (max-width: 1023px) {
+			width: calc(~"50% - 30px");
+		}
+		@media all and (min-width: 1024px) and (max-width: 1199px) {
+			width: calc(~"33.33% - 30px");
+		}
+		@media all and (min-width: 1200px) and (max-width: 1439px) {
+			width: calc(~"25% - 30px");
+		}
+		@media all and (min-width: 1440px) and (max-width: 1679px) {
+			width: calc(~"25% - 30px");
+		}
+		@media all and (min-width: 1680px) and (max-width: 2159px) {
+			width: calc(~"20% - 30px");
+		}
+		@media all and (min-width: 2160px) and (max-width: 2639px) {
+			width: calc(~"16.66% - 30px");
+		}
+
+		.game-content {
+			position: absolute;
+			top: 0;
+			left: 0;
+			right: 0;
+			bottom: 0;
+			padding: 15px;
+
+			.title {
+				font-size: 26px;
+				font-weight: 800;
+				margin-bottom: 10px;
+			}
+		}
+
+		&:before {
+			content: '';
+			display: block;
+			padding-top: 100%;
+		}
+	}
+}
+
+.game-detail-overlay {
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	background-color: rgba(0, 0, 0, 0.4);
+	transition-duration: .4s;
+	transition-timing-function: cubic-bezier(0.165, 0.84, 0.44, 1);
+	z-index: 30;
+
+	&:not(.visible) {
+		visibility: hidden;
+		opacity: 0;
+	}
+}
+
+.game-details {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background-color: #fff;
+	transition: transform .4s cubic-bezier(0.165, 0.84, 0.44, 1);
+	padding: 25px;
+	z-index: 35;
+
+	@media all and (min-width: 630px) and (min-height: 630px) {
+		top: 50%;
+		left: 50%;
+		transform: translate3d(-50%, -50%, 0);
+		width: 630px;
+		height: 630px;
+		border-radius: 15px;
+	}
+
+	.exit-button {
+		position: absolute;
+		top: 0;
+		right: 0;
+		width: 50px;
+		height: 50px;
+		cursor: pointer;
+        // background-color: #0099BC;
+        background-size: 20px 20px;
+        background-position: center center;
+        background-repeat: no-repeat;
+        background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2020%2020%27%3E%3Cpath%20d%3D%27M10%2C8L18%2C0L20%2C2L12%2C10L20%2C18L18%2C20L10%2C12L2%2C20L0%2C18L8%2C10L0%2C2L2%2C0Z%27%20fill%3D%27%230099BC%27/%3E%3C/svg%3E");
+	}
+
+	.game-title {
+		font-size: 34px;
+		font-weight: 800;
+	}
+
+	.join-game {
+		position: absolute;
+		left: 25px;
+		right: 25px;
+		bottom: 15px;
+		background-color: #0099BC;
+		border-radius: 15px;
+	}
+
+	&:not(.visible) {
+		transform: translate3d(0, 100%, 0);
+
+		@media all and (min-width: 630px) and (min-height: 630px) {
+			transform: translate3d(-50%, calc(~"-50% + 1024px"), 0);
+		}
+	}
+}
+
+fieldset {
+	margin: 0 auto;
+	padding: 5px 12px 10px;
+	border: 1px solid #ccc;
+	border-radius: 6px;
+	max-width: 630px;
+
+	legend {
+		padding: 0 4px;
+	}
+
+	label {
+		margin-right: 5px;
+		font-size: 13px;
+		line-height: 18px;
+	}
+
+	input, select {
+		font-size: 12px;
+		
+	}
+
+	select {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		padding: 2px 22px 2px 2px;
+		box-shadow: 0 0 0 1px #ccc;
+		border-radius: 4px;
+		margin-bottom: 5px;
+		background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2020%2018%27%3E%3Cpath%20fill%3D%27%23666%27%20d%3D%27M4%2C4L16%2C4L10%2C14Z%27/%3E%3C/svg%3E");
+		background-size: 20px 18px;
+		background-repeat: no-repeat;
+		background-position: right center;
+	}
+
+	input[type="text"],
+	input[type="number"] {
+		-moz-appearance: none;
+		-webkit-appearance: none;
+		padding: 2px;
+		box-shadow: 0 0 0 1px #ccc;
+		border-radius: 4px;
+		margin-bottom: 5px;
+	}
+	
+	input[type="checkbox"],
+	input[type="radio"] {
+		margin-right: 10px;
+	}
+
+	input::-webkit-outer-spin-button,
+	input::-webkit-inner-spin-button {
+		-webkit-appearance: none;
+	}
+}

@@ -1,32 +1,25 @@
-var GameModule = function () {
-
+var GameModule = function() {
+	var gameModule = this;
 }
 
-var proto = GameModule.prototype;
+GameModule.prototype["displayName"] = "Name";
+GameModule.prototype["bundleId"] = "";
+GameModule.prototype["version"] = "1.0";
+GameModule.prototype["author"] = "";
+GameModule.prototype["clientDir"] = "";
 
-proto.name = "Name";
-proto.author = "Author";
-proto.version = "1.0";
-proto.id = "";
-
-proto.getDetails = function () {
+GameModule.prototype.clientInfo = function() {
 	return {
-		"name": this.name,
-		"author": this.author,
-		"version": this.version,
-		"id": this.id
-	};
+		displayName: this.displayName,
+		bundleId: this.bundleId,
+		version: this.version,
+		author: this.author,
+		clientDir: this.clientDir
+	}
 }
 
-proto.gameLogicModule = null;
-proto.game = null;
-
-proto.setGame = function (game) {
-	this.game = game;
-	this.gameLogicModule.game = game;
-}
-
-proto.playerJoined = function (user) { }
-proto.playerLeft = function (user) { }
+// GameModule.prototype["displayName"] = "Cards Against Humanity - FESTIVAL Edition";
+// GameModule.prototype["bundleId"] = "ml.festival.CAH-festival";
+// GameModule.prototype["version"] = "1.0";
 
 module.exports = GameModule;

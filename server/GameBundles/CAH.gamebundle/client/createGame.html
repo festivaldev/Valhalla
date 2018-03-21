@@ -1,0 +1,19 @@
+{{loadGameScript()}}
+<label>Score Limit:</label>
+<input type="number" min="4" max="99" placeholder="4 - 99" value="8" ng-model="gameOptions.scoreLimit" required style="min-width: 36px;">
+
+<fieldset>
+	<legend>Available Decks</legend>
+	<label class="inline">Test</label>
+	<input type="checkbox">
+	<label class="inline">Test</label>
+	<input type="checkbox">
+	<label class="inline">Test</label>
+	<input type="checkbox">
+	<label class="inline">Test</label>
+	<input type="checkbox">
+	<label class="inline">Test</label>
+	<input type="checkbox">
+</fieldset>
+
+<div ng-controller="TestController"></div>

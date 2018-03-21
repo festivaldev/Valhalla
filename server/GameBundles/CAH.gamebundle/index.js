@@ -1,23 +1,29 @@
 var GameModule = require("../../Classes/GameModule");
 
 var CAHModule = function () {
-	var module = this;
+	GameModule.call(this);
 
-	module.name = "Cards Against Humanity - FESTIVAL Edition";
-	module.author = "FESTIVAL Development";
-	module.version = "1.0";
-	module.id = "ml.festival.CAH-FESTIVAL";
-	
-	module.commandHandler = null;
+	this.displayName = "Cards Against Humanity";
+	this.bundleId = "ml.festival.CAH-festival";
+	this.version = "1.0";
+	this.author = "Sniper_GER";
+	this.clientDir = "cah";
 
-	return module;
+	return this;
 }
 
-CAHModule.prototype = Object.create(GameModule.prototype);
+app.get('/cah/createGame.html', function (req, res) {
+	res.sendFile(__dirname + '/client/createGame.html');
+});
 
-// app.get('/cah.client.js', function (req, res) {
-// 	console.log(req);
-// 	res.sendFile(__dirname + '/index.js');
-// });
+app.get('/cah/client.js', function (req, res) {
+	res.sendFile(__dirname + '/client/client.js');
+});
+
+app.get('/cah/style.css', function (req, res) {
+	res.sendFile(__dirname + '/client/style.css');
+});
+
+CAHModule.prototype = new GameModule();
 
 module.exports = CAHModule;

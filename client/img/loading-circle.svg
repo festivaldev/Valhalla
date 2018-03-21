@@ -1,0 +1,46 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="64" height="64">
+	<style>
+		@keyframes ball {
+			from {
+				transform: rotate(0deg);
+				opacity: 1;
+			}
+
+			39.999% {
+				opacity: 1;
+			}
+			40%,
+			to {
+				transform: rotate(360deg);
+				opacity: 0;
+			}
+		}
+
+		g.balls {
+			transform: rotate(40deg);
+			transform-origin: 32px 32px;
+		}
+
+		circle {
+			fill: #fff;
+			transform-origin: 32px 32px;
+			animation: ball 5s cubic-bezier(0, .5, 1, .5) infinite;
+			opacity: 0;
+		}
+	</style>
+
+	<g class="balls">
+		<circle cx="61" cy="32" r="3" style="animation-delay: 0"/>
+		<circle cx="60.08" cy="26.49" r="3" style="animation-delay: .1s" />
+		<circle cx="58.40" cy="21.24" r="3" style="animation-delay: .2s" />
+		<circle cx="56.01" cy="16.40" r="3" style="animation-delay: .3s" />
+		<circle cx="52.98" cy="12.13" r="3" style="animation-delay: .4s" />
+
+		<circle cx="61" cy="32" r="3" style="animation-delay: 2s" />
+		<circle cx="60.08" cy="26.49" r="3" style="animation-delay: 2.1s" />
+		<circle cx="58.40" cy="21.24" r="3" style="animation-delay: 2.2s" />
+		<circle cx="56.01" cy="16.40" r="3" style="animation-delay: 2.3s" />
+		<circle cx="52.98" cy="12.13" r="3" style="animation-delay: 2.4s" />
+	</g>
+</svg>
+

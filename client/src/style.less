@@ -1,0 +1,41 @@
+* {
+    margin: 0;
+    padding: 0;
+    border: none;
+    box-sizing: border-box;
+    font-family: "SF Compact Text", -apple-system, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
+    font-size: 15px;
+    -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+    background-color: #0099BC;
+    overflow: hidden;
+}
+
+:disabled {
+    cursor: default;
+    opacity: 0.4 !important;
+}
+
+// ng-form input,
+// ng-form select {
+//     display: block;
+
+//     label + & {
+//         display: inline-block;
+
+//         & + * {
+//             display: block;
+//         }
+//     }
+// }
+
+@import "input";
+@import "buttons";
+@import "header";
+@import "pages";
+@import "tabs";
+@import "login";
+@import "lobby";

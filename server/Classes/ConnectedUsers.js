@@ -5,7 +5,7 @@ var ConnectedUsers = function () {
 	var connectedUsers = this;
 	var users = {};
 
-	var kServerMaxPlayers = config.server.maxPlayers;
+	var kServerMaxUsers = config.server.maxUsers;
 
 	connectedUsers.hasUser = function (socketId) {
 		return users[socketId] != null;
@@ -19,7 +19,7 @@ var ConnectedUsers = function () {
 		if (this.hasUser(user.getSocketId())) {
 			// User already exists
 			return false;
-		} else if (Object.keys(users).length >= kServerMaxPlayers && !user.isAdmin()) {
+		} else if (Object.keys(users).length >= kServerMaxUsers && !user.isAdmin()) {
 			// Server has reached max capacity, user is not admin
 			return false;
 		} else {
@@ -29,6 +29,16 @@ var ConnectedUsers = function () {
 
 			return true;
 		}
+	}
+
+	connectedUsers.removeUser = function(socketId) {
+		if (this.hasUser(socketId)) {
+			delete users[socketId];
+		}
+	}
+
+	connectedUsers.length = function() {
+		return Object.keys(users).length;
 	}
 }
 
