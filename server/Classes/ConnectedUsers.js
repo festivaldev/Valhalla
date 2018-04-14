@@ -33,6 +33,7 @@ var ConnectedUsers = function () {
 
 	connectedUsers.removeUser = function(socketId) {
 		if (this.hasUser(socketId)) {
+			users[socketId].noLongerValid();
 			delete users[socketId];
 		}
 	}

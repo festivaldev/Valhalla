@@ -25,39 +25,26 @@
 							<p class="info">{{game.playerCount}} / {{game.maxPlayers}} Players</p>
 						</div>
 					</div>
+					<p ng-if="gameList.length == 0">There are currently no games.</p>
 				</div>
 			</div>
 		</div>
 		<div class="tab">
-			<div class="page-content">
-				<fieldset>
-					<legend>Create Game</legend>
-
-					<label>Game Mode:</label>
-					<select ng-model="gameOptions.currentBundle">
-						<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
-					</select>
-					<br>
-					<label>Player Limit:</label>
-					<select ng-model="gameOptions.playerLimit">
-						<option ng-repeat="n in range(3,20)" value="{{n}}">{{n}}</option>
-					</select>
-					<br>
-					<ng-include ng-if="gameOptions.currentBundle" src="hostname +'/' + gameOptions.currentBundle + '/createGame.html'" />
-				</fieldset>
-				<!-- <ng-form>
-					<label>Game Mode:</label>
-					<select ng-model="currentBundle">
-						<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
-					</select>
-					<br>
-					<label>Player Limit:</label>
-					<select>
-						<option ng-repeat="n in range(3,20)">{{n}}</option>
-					</select>
-					<br>
-					<ng-include ng-if="currentBundle" src="hostname +'/' + currentBundle + '/createGame.html'"></ng-include>
-				</ng-form> -->
+			<div class="page-content" ng-controller="GameSetupController as GameSetupController">
+				<ng-form name="createGameForm">
+					<fieldset>
+						<legend>Create Game</legend>
+						<label>Password: </label>
+						<input type="text" ng-model="gameOptions.password">
+						<label>Game Mode:</label>
+						<select ng-model="currentBundle" ng-change="gameBundleChanged()">
+							<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
+						</select>
+						<br>
+						<ng-include ng-if="currentBundle" src="hostname +'/' + currentBundle + '/createGame.html'" />
+					</fieldset>
+					<button ng-disabled="!createGameForm.$valid" ng-click="createGame()" style="background-color: #0099BC; margin: 15px auto 0; width: 100%; max-width: 630px; display: block;">Create Game</button>
+				</ng-form>
 			</div>
 		</div>
 		<div class="tab">
@@ -73,6 +60,6 @@
 		<div class="exit-button" ng-click="isShowingGameDetails = false;"></div>
 
 		<p class="game-title">{{game.gameName}}</p>
-		<button class="join-game">Join Game</button>
+		<button class="join-game" ng-click="joinGame(game.gameID)">Join Game</button>
 	</div>
 </div>

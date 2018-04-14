@@ -34,6 +34,7 @@ var app = require("express")(),
 	serverPort = 8080;
 
 global.app = app;
+global.io = io;
 
 app.use(function (request, response, next) {
 	response.header("Access-Control-Allow-Origin", "*");
@@ -46,10 +47,16 @@ app.use(function (request, response, next) {
 global.loadedGameBundles = {};
 var gameBundlePath = path.join(__dirname, "GameBundles");
 
+var gameScripts = "";
+
 fs.readdirSync(gameBundlePath).forEach(function(file) {
 	if (path.extname(file) == ".gamebundle") {
 		var bundle = require("./GameBundles/" + file);
-		loadedGameBundles[file.replace(/.gamebundle/g,"")] = bundle;
+		loadedGameBundles[(new bundle()).clientInfo().clientDir] = bundle;
+
+		fs.readFile("./GameBundles/" + file + "/client/client.js", "utf8", function(error, content) {
+			gameScripts += content + "\n\n";
+		});
 
 		log.info(String.format("Loading {0}", file));
 	}
@@ -60,10 +67,11 @@ fs.readdirSync(gameBundlePath).forEach(function(file) {
  */
 var Server = require("./Classes/Server"),
 	ConnectedUsers = require("./Classes/ConnectedUsers"),
+	GameManager = require("./Classes/GameManager"),
 	User = require("./Classes/User.js"),
 	API = require("./api");
 
-global.server = new Server(new ConnectedUsers(), null);
+global.server = new Server(new ConnectedUsers(), new GameManager());
 
 /**
  * Handler for receiving SIGINT (^C)
@@ -107,11 +115,33 @@ io.on("connection", function(socket) {
 			log.info(String.format("User {0} disconnected", user.toString()));
 		}
 	});
+
+	socket.on("_sendPackage", function(data) {
+		var user = server.connectedUsers().getUser(socket.id);
+
+		if (user) {
+			switch (data.type) {
+				case "createGame":
+					server.gameManager().createGameWithPlayer(data.data.gameBundle, data.data.gameOptions, user);
+					break;
+				case "joinGame":
+					server.gameManager().getGameByID(data.data.gameID).addPlayer(user);
+					break;
+				default: break;
+			}
+		}
+	})
 });
 
 /**
  * API Handlers
  */
+
+app.get("/gameScripts.js", function(req, res) {
+	res.setHeader('Content-Type', 'application/javascript');
+	res.send(gameScripts);
+})
+
 app.get("/gameBundles", function (req, res) {
 	res.setHeader('Content-Type', 'application/json');
 	res.send(JSON.stringify(API.getAvailableGameBundles(), null, 4));

@@ -1,13 +1,29 @@
 var api = {
 	getAvailableGameBundles: function() {
-		var bundles = [];
+		var bundles = {};
 		for (var bundle in loadedGameBundles) {
-			bundles.push((new loadedGameBundles[bundle]()).clientInfo());
+			bundles[bundle] = (new loadedGameBundles[bundle]()).clientInfo();
 		}
 		return bundles;
 	},
 	getGameList: function() {
-		return [{
+		var games = server.gameManager().getGames();
+
+		var gameList = [];
+		for (var gameID in games) {
+			var game = games[gameID];
+
+			gameList.push({
+				gameID: game.getID(),
+				gameName: game.getHost().getUser().getUsername(),
+				gameMode: game.gameBundle.clientInfo().displayName,
+				playerCount: game.getPlayers().length,
+				maxPlayers: game.getOptions(false).playerLimit
+			})
+		}
+
+		return gameList;
+		/*return [{
 			gameId: 678423,
 			gameName: "Test",
 			gameMode: "Cards Against Humanity",
@@ -79,7 +95,7 @@ var api = {
 			gameMode: "Cards Against Humanity",
 			playerCount: 4,
 			maxPlayers: 10,
-		}]
+		}]*/
 	}
 }
 

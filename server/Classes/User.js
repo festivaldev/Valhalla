@@ -21,6 +21,12 @@ var User = function (_username, _socketId, _isAdmin) {
 		return user.getUsername();
 	}
 
+	user.noLongerValid = function() {
+		if (currentGame != null) {
+			currentGame.removePlayer(user);
+		}
+	}
+
 	user.getGame = function () {
 		return currentGame;
 	}
@@ -29,8 +35,14 @@ var User = function (_username, _socketId, _isAdmin) {
 			return;
 		}
 
-		log.info(String.format("User {0} joined game with id {1}", user.toString(), game.getId()))
+		log.info(String.format("User {0} joined game with id {1}", user.toString(), game.getID()))
 		currentGame = game;
+	}
+
+	user.leaveGame = function (game) {
+		if (currentGame == game) {
+			currentGame = null;
+		}
 	}
 
 	user.getClientInfo = function() {

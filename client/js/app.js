@@ -1,8 +1,26 @@
 var socket,
-	gameScript,
+	gameScripts = {},
 	gameBundleCache = "";
 
+var PackageHandler = function($rootScope, $location) {
+	var handler = function(data) {
+		console.log(data);
+
+		switch (data.type) {
+			case "joinedGame":
+				$rootScope.$apply(function() {
+					$location.path("/game/"+data.data.gameId).replace();
+				});
+				break;
+			default: break;
+		}
+	}
+
+	return handler;
+}
+
 var app = angular.module("Valhalla", ["ngRoute"])
+	.service("PackageHandler", PackageHandler)
 	.directive("tabHeader", function() {
 		return {
 			restrict: "E",
@@ -29,11 +47,14 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			$location.path("/").replace();
 		}
 	})
-	.controller("LoginController", function($scope, $rootScope, $http, $location, $timeout) {
+	.controller("LoginController", function($scope, $rootScope, $http, $location, $timeout, PackageHandler) {
+		$rootScope.gameScripts = {};
 		$rootScope.hostname = "http://" + location.hostname + ":8080";
 		$scope.isConnecting = false;
 
 		$scope.time = (new Date()).getTime();
+
+		document.querySelector("script#game-scripts").setAttribute("src", $rootScope.hostname+"/gameScripts.js");
 
 		$scope.connect = function() {
 			if (socket) {
@@ -78,8 +99,10 @@ var app = angular.module("Valhalla", ["ngRoute"])
 					$timeout(() => {
 						$scope.isConnecting = false;
 						$location.path("/lobby").replace();
-					}, Math.floor(1000 + Math.random() * 1000));
+					}, 0/*Math.floor(1000 + Math.random() * 1000)*/);
 				});
+
+				socket.on("_receivePackage", PackageHandler);
 
 				socket.on("disconnect", function () {
 					socket.close();
@@ -97,7 +120,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 				event.preventDefault();
 				return false;
 			}
-			if (event.keyCode === 13 && $scope.username.length != 0) {
+			if (event.keyCode === 13 && $scope.username && $scope.username.length != 0) {
 				$scope.connect();
 			}
 		}
@@ -105,20 +128,6 @@ var app = angular.module("Valhalla", ["ngRoute"])
 	.controller("LobbyController", function($scope, $rootScope, $timeout, $http) {
 		$scope.headers = ["Games", "Create Game", "Settings"];
 		$scope.isShowingGameDetails = false;
-
-		$scope.gameOptions = {
-			currentBundle: null,
-			playerLimit: "10"
-		}
-
-		$http.get($rootScope.hostname + "/gameList").then(function (response) {
-			$rootScope.gameList = response.data;
-		});
-
-		$http.get($rootScope.hostname + "/gameBundles").then(function (response) {
-			$rootScope.gameBundles = response.data;
-			$scope.gameOptions.currentBundle = $rootScope.gameBundles[0].clientDir;
-		});
 
 		$scope.showGameDetails = function(game) {
 			$scope.game = game;
@@ -135,19 +144,41 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			}
 			return input;
 		};
-		
-		
-		$scope.loadGameScript = function() {
-			if ($scope.gameOptions.currentBundle && gameBundleCache != $scope.gameOptions.currentBundle) {
-				gameBundleCache = $scope.gameOptions.currentBundle;
-				
-				if (gameScript) {
-					document.head.removeChild(gameScript);
+
+		$scope.joinGame = function(gameID) {
+			socket.emit("_sendPackage", {
+				type: "joinGame",
+				data: {
+					gameID: gameID
 				}
-				gameScript = document.createElement("script");
-				gameScript.src = $rootScope.hostname + "/" + $scope.gameOptions.currentBundle + "/client.js";
-				document.head.appendChild(gameScript);
-			}
+			})
+		}
+	})
+	.controller("GameSetupController", function($scope, $rootScope, $http) {
+		$scope.gameOptions = {}
+
+		$http.get($rootScope.hostname + "/gameList").then(function (response) {
+			$rootScope.gameList = response.data;
+		});
+
+		$http.get($rootScope.hostname + "/gameBundles").then(function (response) {
+			$rootScope.gameBundles = response.data;
+			$scope.currentBundle = Object.keys($rootScope.gameBundles)[0];
+			$scope.gameBundleChanged();
+		});
+
+		$scope.gameBundleChanged = function() {
+			$scope.gameOptions = $rootScope.gameScripts[$scope.currentBundle].defaultOptions;
+		}
+
+		$scope.createGame = function() {
+			socket.emit("_sendPackage", {
+				type: "createGame",
+				data: {
+					gameBundle: $scope.currentBundle,
+					gameOptions: $scope.gameOptions
+				}
+			})
 		}
 	})
 	.config(function($routeProvider, $sceProvider) {

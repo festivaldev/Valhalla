@@ -18,6 +18,12 @@ GameModule.prototype.clientInfo = function() {
 	}
 }
 
+GameModule.prototype.game = null;
+
+GameModule.prototype.setGame = function(game) {
+	this.game = game;
+}
+
 // GameModule.prototype["displayName"] = "Cards Against Humanity - FESTIVAL Edition";
 // GameModule.prototype["bundleId"] = "ml.festival.CAH-festival";
 // GameModule.prototype["version"] = "1.0";

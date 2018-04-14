@@ -1,19 +1,14 @@
-{{loadGameScript()}}
+<label>Player Limit:</label>
+<select ng-model="$parent.gameOptions.playerLimit" ng-options="n for n in range(3,20)"></select>
+<br>
 <label>Score Limit:</label>
-<input type="number" min="4" max="99" placeholder="4 - 99" value="8" ng-model="gameOptions.scoreLimit" required style="min-width: 36px;">
+<input type="number" min="4" max="99" placeholder="4 - 99" ng-model="$parent.gameOptions.scoreLimit" required style="min-width: 36px;">
 
 <fieldset>
 	<legend>Available Decks</legend>
-	<label class="inline">Test</label>
-	<input type="checkbox">
-	<label class="inline">Test</label>
-	<input type="checkbox">
-	<label class="inline">Test</label>
-	<input type="checkbox">
-	<label class="inline">Test</label>
-	<input type="checkbox">
-	<label class="inline">Test</label>
-	<input type="checkbox">
-</fieldset>
 
-<div ng-controller="TestController"></div>
+	<div style="display: inline" ng-repeat="set in gameScripts.cah.setupData.cardSets track by $index">
+		<label class="inline" for="{{set.id}}">{{set.title}}</label>
+		<input type="checkbox" name="{{set.id}}" id="{{set.id}}" ng-model="$parent.gameOptions.sets[set.id]">
+	</div>
+</fieldset>
