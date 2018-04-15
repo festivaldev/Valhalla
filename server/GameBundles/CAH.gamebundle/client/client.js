@@ -21,6 +21,6 @@ angular.element(document).injector().get("$rootScope").gameScripts["cah"] = {
 	},
 	defaultOptions: {
 		playerLimit: 10,
-		scoreLimit: 8
+		scoreGoal: 8
 	}
 }

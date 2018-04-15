@@ -12,6 +12,8 @@ var PackageHandler = function($rootScope, $location) {
 					$location.path("/game/"+data.data.gameId).replace();
 				});
 				break;
+			case "joinGameFailed":
+				alert("Joining this game failed. Reason: " + data.data.reason);
 			default: break;
 		}
 	}
@@ -145,11 +147,12 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			return input;
 		};
 
-		$scope.joinGame = function(gameID) {
+		$scope.joinGame = function(game) {
 			socket.emit("_sendPackage", {
 				type: "joinGame",
 				data: {
-					gameID: gameID
+					gameID: game.gameID,
+					password: (game.passworded ? prompt("Enter Password") : null)
 				}
 			})
 		}

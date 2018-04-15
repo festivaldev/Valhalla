@@ -125,7 +125,7 @@ io.on("connection", function(socket) {
 					server.gameManager().createGameWithPlayer(data.data.gameBundle, data.data.gameOptions, user);
 					break;
 				case "joinGame":
-					server.gameManager().getGameByID(data.data.gameID).addPlayer(user);
+					server.gameManager().getGameByID(data.data.gameID).addPlayer(user, data.data.password);
 					break;
 				default: break;
 			}

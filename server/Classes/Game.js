@@ -115,10 +115,15 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 
 
 
-	game.addPlayer = function (user) {
+	game.addPlayer = function (user, password) {
 		// if (players.length >= gameOptions.maxPlayers) {
 		// 	return;
 		// }
+
+		if (options.password != null && options.password != password && host) {
+			io.to(user.getSocketId()).emit("_receivePackage", { type: "joinGameFailed", data: { reason: "Incorrect Password" } });
+			return;
+		}
 
 		user.joinGame(game);
 
@@ -158,6 +163,7 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 	}
 
 	game.setGameSettings = function (gameOptions) {
+		console.log(gameOptions);
 		options = new GameOptions(gameBundle).deserialize(gameOptions);
 	}
 }

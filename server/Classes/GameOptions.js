@@ -19,7 +19,7 @@ var GameOptions = function(_gameBundle) {
 		var info = {
 			playerLimit: gameOptions.playerLimit,
 			scoreGoal: gameOptions.scoreGoal,
-			password: (includePassword ? "" : gameOptions.password)
+			password: (includePassword ? gameOptions.password : null)
 		}
 
 		return info;
@@ -31,6 +31,8 @@ var GameOptions = function(_gameBundle) {
 		_options.playerLimit = options.playerLimit;
 		_options.scoreGoal = options.scoreGoal;
 		_options.password = options.password;
+
+		console.log([options, _options]);
 
 		return _options;
 	}

@@ -60,6 +60,7 @@
 		<div class="exit-button" ng-click="isShowingGameDetails = false;"></div>
 
 		<p class="game-title">{{game.gameName}}</p>
-		<button class="join-game" ng-click="joinGame(game.gameID)">Join Game</button>
+		<button class="join-game" ng-if="!game.passworded" ng-click="joinGame(game)">Join Game</button>
+		<button class="join-game" ng-if="game.passworded" ng-click="joinGame(game)">Join Game (Secured)</button>
 	</div>
 </div>
