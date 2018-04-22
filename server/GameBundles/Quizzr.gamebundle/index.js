@@ -4,7 +4,7 @@ var CAHModule = function () {
 	GameModule.call(this);
 
 	this.displayName = "Quizzr";
-	this.bundleId = "ml.festival.quizzr";
+	this.bundleID = "ml.festival.quizzr";
 	this.version = "1.0";
 	this.author = "Sniper_GER";
 	this.clientDir = "quiz";

@@ -1,0 +1,13 @@
+<div class="game">
+	<header ng-class="{'expanded': expandHeader}">
+		<div class="exit-button" ng-click="socket.disconnect()"></div>
+
+		<div class="title lowered">{{currentGame.host}}'s Game</div>
+
+		<div class="expand-button" ng-click="expandHeader = !expandHeader"></div>
+	</header>
+
+	<div class="page-content">
+		<ng-include ng-if="currentGame" src="hostname +'/' + currentGame.gameBundle.clientDir + '/game.html'" />
+	</div>
+</div>

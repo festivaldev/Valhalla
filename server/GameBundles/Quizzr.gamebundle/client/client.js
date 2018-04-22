@@ -5,11 +5,40 @@
  * @version 1.0
  */
 
-angular.element(document).injector().get("$rootScope").gameScripts["quiz"] = {
-	test: function () {
-		console.log("test");
-	},
-	defaultOptions: {
-		playerLimit: 2
-	}
-}
+
+/*(function () {
+	var $injector = angular.element(document).injector();
+	var $rootScope = $injector.get("$rootScope");
+
+	$rootScope.gameScripts["quiz"] = {
+		startGame: function () {
+			socket.emit("_sendPackage", { type: "startGame" })
+		},
+		handleGameEvent: function (data) {
+			console.log(data);
+		},
+		defaultOptions: {
+			playerLimit: 2
+		}
+	};
+	window.resizeTo();
+})()*/
+
+(function () {
+	//console.log('Hello World!');
+
+	var $injector = angular.element(document).injector();
+	var $rootScope = $injector.get("$rootScope");
+
+	$rootScope.gameScripts["quiz"] = {
+		startGame: function () {
+			socket.emit("_sendPackage", { type: "startGame" })
+		},
+		handleGameEvent: function (data) {
+			console.log(data);
+		},
+		defaultOptions: {
+			playerLimit: 2
+		}
+	};
+})();

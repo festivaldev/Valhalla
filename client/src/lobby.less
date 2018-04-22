@@ -161,6 +161,50 @@
 		border-radius: 15px;
 	}
 
+	.player-info-wrapper {
+		max-height: 340px;
+		overflow: scroll;
+	}
+
+	table {
+		width: 100%;
+		margin-top: 15px;
+
+		td {
+			line-height: 28px;
+
+			input {
+				padding: 5px 0;
+			}
+		}
+
+		&:not(.player-info) tr td:not(:first-child) {
+			padding-left: 10px;
+			color: #999;
+		}
+
+		&.player-info {
+			tr {
+
+				th {
+					text-align: left;
+					font-size: 13px;
+					font-weight: 500;
+				}
+				th, td {
+					&:nth-child(1) {
+						width: 50%;
+					}
+
+					&:nth-child(2),
+					&:nth-child(3) {
+						width: 25%;
+					}
+				}
+			}
+		}
+	}
+
 	&:not(.visible) {
 		transform: translate3d(0, 100%, 0);
 
@@ -184,7 +228,7 @@ fieldset {
 	label {
 		margin-right: 5px;
 		font-size: 13px;
-		line-height: 18px;
+		line-height: 22px;
 	}
 
 	input, select {
@@ -198,7 +242,7 @@ fieldset {
 		padding: 2px 22px 2px 2px;
 		box-shadow: 0 0 0 1px #ccc;
 		border-radius: 4px;
-		margin-bottom: 5px;
+		// margin-bottom: 5px;
 		background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2020%2018%27%3E%3Cpath%20fill%3D%27%23666%27%20d%3D%27M4%2C4L16%2C4L10%2C14Z%27/%3E%3C/svg%3E");
 		background-size: 20px 18px;
 		background-repeat: no-repeat;
@@ -212,16 +256,20 @@ fieldset {
 		padding: 2px;
 		box-shadow: 0 0 0 1px #ccc;
 		border-radius: 4px;
-		margin-bottom: 5px;
+		// margin-bottom: 5px;
 	}
 	
 	input[type="checkbox"],
 	input[type="radio"] {
-		margin-right: 10px;
+		margin-right: 5px;
 	}
 
 	input::-webkit-outer-spin-button,
 	input::-webkit-inner-spin-button {
 		-webkit-appearance: none;
+	}
+
+	table tr td:first-child {
+		min-width: 100px;
 	}
 }

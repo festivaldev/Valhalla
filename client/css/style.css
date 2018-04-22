@@ -16,6 +16,40 @@ body {
   cursor: default;
   opacity: 0.4 !important;
 }
+h1,
+p.h1 {
+  font-size: 46px;
+  font-weight: 200;
+  line-height: 45px;
+  margin-bottom: 30px;
+}
+h2,
+p.h2 {
+  font-size: 34px;
+  font-weight: 200;
+  line-height: 35px;
+  margin-bottom: 30px;
+}
+* + h2,
+* + p.h2 {
+  margin-top: 30px;
+}
+h3,
+p.h3 {
+  font-size: 24px;
+  line-height: 28px;
+  margin-bottom: 30px;
+}
+* + h3,
+* + p.h3 {
+  margin-top: 30px;
+}
+h4,
+p.h4 {
+  font-size: 20px;
+  line-height: 25px;
+  margin-bottom: 30px;
+}
 input[type="text"],
 input[type="password"] {
   display: block;
@@ -69,6 +103,11 @@ header .title {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+header .title.lowered {
+  top: auto;
+  bottom: 0;
+  left: 0;
 }
 header ul {
   position: absolute;
@@ -440,6 +479,39 @@ header + .tab-controller {
   background-color: #0099BC;
   border-radius: 15px;
 }
+.game-details .player-info-wrapper {
+  max-height: 340px;
+  overflow: scroll;
+}
+.game-details table {
+  width: 100%;
+  margin-top: 15px;
+}
+.game-details table td {
+  line-height: 28px;
+}
+.game-details table td input {
+  padding: 5px 0;
+}
+.game-details table:not(.player-info) tr td:not(:first-child) {
+  padding-left: 10px;
+  color: #999;
+}
+.game-details table.player-info tr th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+}
+.game-details table.player-info tr th:nth-child(1),
+.game-details table.player-info tr td:nth-child(1) {
+  width: 50%;
+}
+.game-details table.player-info tr th:nth-child(2),
+.game-details table.player-info tr td:nth-child(2),
+.game-details table.player-info tr th:nth-child(3),
+.game-details table.player-info tr td:nth-child(3) {
+  width: 25%;
+}
 .game-details:not(.visible) {
   transform: translate3d(0, 100%, 0);
 }
@@ -461,7 +533,7 @@ fieldset legend {
 fieldset label {
   margin-right: 5px;
   font-size: 13px;
-  line-height: 18px;
+  line-height: 22px;
 }
 fieldset input,
 fieldset select {
@@ -473,7 +545,6 @@ fieldset select {
   padding: 2px 22px 2px 2px;
   box-shadow: 0 0 0 1px #ccc;
   border-radius: 4px;
-  margin-bottom: 5px;
   background-image: url("data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%27http%3A//www.w3.org/2000/svg%27%20viewBox%3D%270%200%2020%2018%27%3E%3Cpath%20fill%3D%27%23666%27%20d%3D%27M4%2C4L16%2C4L10%2C14Z%27/%3E%3C/svg%3E");
   background-size: 20px 18px;
   background-repeat: no-repeat;
@@ -486,13 +557,26 @@ fieldset input[type="number"] {
   padding: 2px;
   box-shadow: 0 0 0 1px #ccc;
   border-radius: 4px;
-  margin-bottom: 5px;
 }
 fieldset input[type="checkbox"],
 fieldset input[type="radio"] {
-  margin-right: 10px;
+  margin-right: 5px;
 }
 fieldset input::-webkit-outer-spin-button,
 fieldset input::-webkit-inner-spin-button {
   -webkit-appearance: none;
+}
+fieldset table tr td:first-child {
+  min-width: 100px;
+}
+.game {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #fff;
+}
+.game button {
+  background-color: #0099BC;
 }

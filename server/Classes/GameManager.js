@@ -32,6 +32,8 @@ var GameManager = function() {
 
 			game.setGameSettings(gameOptions);
 			game.addPlayer(user);
+
+			Broadcaster.updateGameList();
 		} catch (error) {
 			console.log(error);
 		}
@@ -48,8 +50,10 @@ var GameManager = function() {
 			game.removePlayer(user);
 		});
 
-		/// TODO: Broadcast game list update
-		log.info(String.format("Destroyed game {0}", gameID));
+		if (!isShuttingDown) {
+			log.info(String.format("Destroyed game {0}", gameID));
+		}
+		Broadcaster.updateGameList();
 	}
 
 	gameManager.getGameByID = function(gameID) {

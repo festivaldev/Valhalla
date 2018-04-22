@@ -1,0 +1,6 @@
+<div ng-if="currentGame.state == 0">
+	<h1>Game Lobby</h1>
+	
+	<button ng-if="socket.id == currentGame.hostID" ng-click="gameScripts[currentGame.gameBundle.clientDir].startGame()">Start Game</button>
+	<p ng-if="socket.id != currentGame.hostID">Waiting for the host to start the game...</p>
+</div>

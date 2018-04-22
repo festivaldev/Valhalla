@@ -8,6 +8,7 @@ var GameOptions = function(_gameBundle) {
 	gameOptions.playerLimit = -1;
 	gameOptions.scoreGoal = -1;
 	gameOptions.password = null;
+	gameOptions.raw = {};
 
 	gameOptions.update = function(newOptions) {
 		gameOptions.playerLimit = newOptions.playerLimit;
@@ -15,11 +16,12 @@ var GameOptions = function(_gameBundle) {
 		gameOptions.password = newOptions.password;
 	}
 
-	gameOptions.serialize = function(includePassword) {
+	gameOptions.serialize = function(includePassword, raw) {
 		var info = {
 			playerLimit: gameOptions.playerLimit,
 			scoreGoal: gameOptions.scoreGoal,
-			password: (includePassword ? gameOptions.password : null)
+			password: (includePassword ? gameOptions.password : null),
+			raw: (raw ? gameOptions.raw : null)
 		}
 
 		return info;
@@ -31,8 +33,7 @@ var GameOptions = function(_gameBundle) {
 		_options.playerLimit = options.playerLimit;
 		_options.scoreGoal = options.scoreGoal;
 		_options.password = options.password;
-
-		console.log([options, _options]);
+		_options.raw = options;
 
 		return _options;
 	}

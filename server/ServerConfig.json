@@ -2,5 +2,11 @@
 	"server": {
 		"maxUsers": 100,
 		"maxGames": 20
+	},
+	"gameBundles": {
+		"CAH": {
+			"roundIntermission": 5000,
+			"numberOfBlackCardsToShow": 5
+		}
 	}
 }

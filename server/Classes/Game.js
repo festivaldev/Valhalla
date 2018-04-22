@@ -22,8 +22,8 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 		return id;
 	}
 
-	game.getOptions = function(includePassword) {
-		return options.serialize(includePassword);
+	game.getOptions = function(includePassword, raw) {
+		return options.serialize(includePassword, raw);
 	}
 
 	game.getHost = function () {
@@ -73,7 +73,8 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 		var info = {
 			id: id,
 			host: host.getUser().getUsername(),
-			//state: game.gameBundle.gameLogicModule.state,
+			hostID: host.getUser().getSocketID(),
+			state: game.gameBundle.gameLogic.state,
 			gameBundle: game.gameBundle.clientInfo(),
 			//gameOptions: options.serialize(includePassword),
 			//hasPassword: options.password != null && options.password != ""
@@ -99,15 +100,15 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 	}
 
 	game.getPlayerInfo = function (player) {
-		if (player == null) {
+		if (!player) {
 			return {};
 		}
 
 		var playerInfo = {
 			name: player.getUser().getUsername(),
-			id: player.getUser().getSocketId(),
+			id: player.getUser().getSocketID(),
 			score: player.getScore(),
-			status: game.gameBundle.gameLogicModule.getPlayerStatus(player)
+			status: game.gameBundle.gameLogic.getPlayerStatus(player)
 		};
 
 		return playerInfo;
@@ -116,12 +117,12 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 
 
 	game.addPlayer = function (user, password) {
-		// if (players.length >= gameOptions.maxPlayers) {
-		// 	return;
-		// }
+		if (players.length >= options.maxPlayers) {
+			return;
+		}
 
-		if (options.password != null && options.password != password && host) {
-			io.to(user.getSocketId()).emit("_receivePackage", { type: "joinGameFailed", data: { reason: "Incorrect Password" } });
+		if (options.password && options.password != password && host) {
+			io.to(user.getSocketID()).emit("_receivePackage", { type: "joinGameFailed", data: { reason: "Incorrect Password" } });
 			return;
 		}
 
@@ -134,15 +135,18 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 			host = player;
 		}
 
-		io.to(user.getSocketId()).emit("_receivePackage", { type: "joinedGame", data: { gameId: id, gameInfo: game.getInfo(false) } });
-		/// TODO: Broadcast game list update
+		io.to(user.getSocketID()).emit("_receivePackage", { type: "joinedGame", data: { gameID: id, gameInfo: game.getInfo(false) } });
+		Broadcaster.updateGameList();
 	}
 
 	game.removePlayer = function (user) {
 		var player = game.getPlayerForUser(user);
 
 		if (player) {
-			log.info(String.format("Removing {0} from game {1}", user.toString(), id));
+			if (!isShuttingDown) {
+				log.info(String.format("Removing {0} from game {1}", user.toString(), id));
+			}
+			
 			players.splice(players.indexOf(player), 1);
 			user.leaveGame(game);
 
@@ -156,6 +160,7 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 
 			if (players.length) {
 				// TODO: player stuff
+				Broadcaster.updateGameList();
 			} else {
 				gameManager.destroyGame(id);
 			}
@@ -163,7 +168,6 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 	}
 
 	game.setGameSettings = function (gameOptions) {
-		console.log(gameOptions);
 		options = new GameOptions(gameBundle).deserialize(gameOptions);
 	}
 }

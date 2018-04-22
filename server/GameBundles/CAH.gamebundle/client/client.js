@@ -5,22 +5,67 @@
  * @version 1.0
  */
 
-angular.element(document).injector().get("$rootScope").gameScripts["cah"] = {
-	test: function() {
-		console.log("test");
-	},
-	setupData: {
-		cardSets: [
-			{
-				id: "5967345",
-				title: "Test 1",
-				calls: 10,
-				responses: 10
+/*(function() {
+	var $injector = angular.element(document).injector();
+	var $rootScope = $injector.get("$rootScope");
+	var $http = $injector.get("$http");
+
+	$rootScope.gameScripts["cah"] = {
+		startGame: function () {
+			socket.emit("_sendPackage", { type: "startGame" })
+		},
+		handleGameEvent: function (data) {
+			console.log(data);
+		},
+		setupData: {
+			cardSets: null
+		},
+		defaultOptions: {
+			playerLimit: 10,
+			scoreGoal: 8,
+			blanksInDeck: 0
+		}
+	};
+
+	$http.get($rootScope.hostname + "/cah/cardSets").then(function (response) {
+		$rootScope.gameScripts["cah"].setupData.cardSets = response.data;
+	});
+})()*/
+
+(function () {
+	//console.log('Hello World!');
+
+	var $injector = angular.element(document).injector();
+	var $rootScope = $injector.get("$rootScope");
+	var $http = $injector.get("$http");
+
+	$rootScope.gameScripts["cah"] = {
+		startGame: function () {
+			socket.emit("_sendPackage", { type: "startGame" })
+		},
+		handleGameEvent: function (data) {
+			console.log(data);
+			switch (data.eventType) {
+				case "gameStateChanged":
+					if ($rootScope.currentGame) {
+						$rootScope.$apply(function () {
+							$rootScope.currentGame.state = data.data.gameState;
+						})
+					}
+					break;
 			}
-		]
-	},
-	defaultOptions: {
-		playerLimit: 10,
-		scoreGoal: 8
-	}
-}
+		},
+		setupData: {
+			cardSets: null
+		},
+		defaultOptions: {
+			playerLimit: 10,
+			scoreGoal: 8,
+			blanksInDeck: 0
+		}
+	};
+
+	$http.get($rootScope.hostname + "/cah/cardSets").then(function (response) {
+		$rootScope.gameScripts["cah"].setupData.cardSets = response.data;
+	});
+})();

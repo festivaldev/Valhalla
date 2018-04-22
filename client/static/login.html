@@ -7,7 +7,8 @@
 			<input type="text" name="username" placeholder="Username" ng-model="username" ng-disabled="isConnecting || socket.connected"
 			 required autocomplete="off" autofocus ng-keydown="inputKeydown($event)">
 		</div>
-		<button class="connect" ng-if="!isConnecting" ng-click="connect()" ng-disabled="!loginForm.$valid || socket.connected">Connect</button>
+		<p ng-if="!keyLength(gameScripts)" style="padding: 10px 0 0; color: white; text-align: center;">Game scripts cannot be loaded.<br>Please reload this page.</p>
+		<button class="connect" ng-if="!isConnecting" ng-click="connect()" ng-disabled="!loginForm.$valid || socket.connected || !keyLength(gameScripts)">Connect</button>
 		<img class="loading" ng-src="img/loading-circle.svg?{{time}}" ng-if="isConnecting">
 	</ng-form>
 </div>

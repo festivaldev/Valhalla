@@ -25,7 +25,7 @@
 							<p class="info">{{game.playerCount}} / {{game.maxPlayers}} Players</p>
 						</div>
 					</div>
-					<p ng-if="gameList.length == 0">There are currently no games.</p>
+					<p ng-if="!gameList.length ">There are currently no games.</p>
 				</div>
 			</div>
 		</div>
@@ -34,13 +34,20 @@
 				<ng-form name="createGameForm">
 					<fieldset>
 						<legend>Create Game</legend>
-						<label>Password: </label>
-						<input type="text" ng-model="gameOptions.password">
-						<label>Game Mode:</label>
-						<select ng-model="currentBundle" ng-change="gameBundleChanged()">
-							<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
-						</select>
-						<br>
+						<table>
+							<tr>
+								<td><label>Game Mode:</label></td>
+								<td>
+									<select ng-model="currentBundle" ng-change="gameBundleChanged()">
+										<option ng-repeat="bundle in gameBundles" value="{{bundle.clientDir}}">{{bundle.displayName}}</option>
+									</select>
+								</td>
+							</tr>
+							<tr>
+								<td><label>Password:</label></td>
+								<td><input type="text" placeholder="Optional" ng-model="gameOptions.password"></td>
+							</tr>
+						</table>
 						<ng-include ng-if="currentBundle" src="hostname +'/' + currentBundle + '/createGame.html'" />
 					</fieldset>
 					<button ng-disabled="!createGameForm.$valid" ng-click="createGame()" style="background-color: #0099BC; margin: 15px auto 0; width: 100%; max-width: 630px; display: block;">Create Game</button>
@@ -59,7 +66,44 @@
 	<div class="game-details" ng-class="{'visible':isShowingGameDetails}">
 		<div class="exit-button" ng-click="isShowingGameDetails = false;"></div>
 
-		<p class="game-title">{{game.gameName}}</p>
+		<p class="game-title">Game Info – {{game.gameName}}</p>
+		<table>
+			<tr>
+				<td>Name:</td>
+				<td>{{game.gameName}}</td>
+			</tr>
+			<tr>
+				<td>IP Address:</td>
+				<td>{{hostname}}</td>
+			</tr>
+			<tr>
+				<td>Players:</td>
+				<td>{{game.playerCount}} / {{game.maxPlayers}}</td>
+			</tr>
+			<tr>
+				<td>Latency:</td>
+				<td>{{latency}} ms</td>
+			</tr>
+		</table>
+		<table class="player-info">
+			<tr>
+				<th>Player Name</th>
+				<th>Score</th>
+				<th>Time</th>
+			</tr>
+		</table>
+		<div class="player-info-wrapper">
+			<table class="player-info" style="margin-top: 0">
+				<!-- <tr ng-repeat="n in [] | range:10">
+					<td>test</td>
+					<td>-1</td>
+					<td>NaN</td>
+				</tr> -->
+				<tr>
+					<td colspan="3">Server is not responding.</td>
+				</tr>
+			</table>
+		</div>
 		<button class="join-game" ng-if="!game.passworded" ng-click="joinGame(game)">Join Game</button>
 		<button class="join-game" ng-if="game.passworded" ng-click="joinGame(game)">Join Game (Secured)</button>
 	</div>

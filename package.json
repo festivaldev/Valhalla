@@ -18,7 +18,9 @@
   "homepage": "https://github.com/festivaldev/Valhalla#readme",
   "dependencies": {
     "express": "^4.16.2",
-    "socket.io": "^2.0.4"
+    "seedrandom": "^2.4.3",
+    "socket.io": "^2.0.4",
+    "sqlite3": "^4.0.0"
   },
   "devDependencies": {
     "nodemon": "^1.17.1"

@@ -1,19 +1,33 @@
 var socket,
 	gameScripts = {},
-	gameBundleCache = "";
+	latencyCheck;
 
 var PackageHandler = function($rootScope, $location) {
 	var handler = function(data) {
-		console.log(data);
-
 		switch (data.type) {
+			case "pong":
+				$rootScope.$apply(function () {
+					$rootScope.latency = Date.now() - $rootScope.startTime;
+				});
+				break;
+			case "updateGameList":
+				$rootScope.$apply(function () {
+					$rootScope.gameList = data.data.gameList;
+					$rootScope.gameBundles = data.data.bundles;
+				})
+				break;
 			case "joinedGame":
 				$rootScope.$apply(function() {
-					$location.path("/game/"+data.data.gameId).replace();
+					$location.path("/game/"+data.data.gameID).replace();
+					$rootScope.currentGame = data.data.gameInfo;
 				});
 				break;
 			case "joinGameFailed":
 				alert("Joining this game failed. Reason: " + data.data.reason);
+				break;
+			case "gameEvent":
+				$rootScope.gameScripts[$rootScope.currentGame.gameBundle.clientDir].handleGameEvent(data);
+				break;
 			default: break;
 		}
 	}
@@ -23,6 +37,15 @@ var PackageHandler = function($rootScope, $location) {
 
 var app = angular.module("Valhalla", ["ngRoute"])
 	.service("PackageHandler", PackageHandler)
+	.filter('range', function () {
+		return function (input, total) {
+			total = parseInt(total);
+			for (var i = 0; i < total; i++) {
+				input.push(i);
+			}
+			return input;
+		};
+	})
 	.directive("tabHeader", function() {
 		return {
 			restrict: "E",
@@ -44,19 +67,23 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			}
 		}
 	})
-	.controller("MainViewController", function($scope, $location) {
+	.controller("MainViewController", function($scope, $rootScope, $location) {
+		$rootScope.hostname = "http://" + location.hostname + ":8080";
+
+		$rootScope.gameScripts = {};
+		document.querySelector("script#game-scripts").setAttribute("src", $rootScope.hostname + "/gameScripts.js");
+
 		if (!socket || !socket.connected) {
 			$location.path("/").replace();
 		}
 	})
 	.controller("LoginController", function($scope, $rootScope, $http, $location, $timeout, PackageHandler) {
-		$rootScope.gameScripts = {};
-		$rootScope.hostname = "http://" + location.hostname + ":8080";
 		$scope.isConnecting = false;
-
 		$scope.time = (new Date()).getTime();
 
-		document.querySelector("script#game-scripts").setAttribute("src", $rootScope.hostname+"/gameScripts.js");
+		$scope.keyLength = function(keys) {
+			return Object.keys(keys).length;
+		}
 
 		$scope.connect = function() {
 			if (socket) {
@@ -84,6 +111,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 					"reconnectionAttempts": 5
 				});
 
+				$rootScope.startTime = Date.now();
 				socket._connectTimer = setTimeout(function () {
 					socket.close();
 					socket = undefined;
@@ -97,18 +125,31 @@ var app = angular.module("Valhalla", ["ngRoute"])
 					if (socket._connectTimer) {
 						clearTimeout(socket._connectTimer);
 					}
+
+					$rootScope.latency = Date.now() - $rootScope.startTime;
 					
 					$timeout(() => {
 						$scope.isConnecting = false;
 						$location.path("/lobby").replace();
 					}, 0/*Math.floor(1000 + Math.random() * 1000)*/);
+
+					var startTime;
+					latencyCheck = setInterval(function () {
+						$rootScope.startTime = Date.now();
+						socket.emit("_sendPackage", { type: "ping" });
+					}, 10000);
 				});
 
 				socket.on("_receivePackage", PackageHandler);
 
 				socket.on("disconnect", function () {
+					clearInterval(latencyCheck);
 					socket.close();
 					socket = undefined;
+
+					delete $rootScope.currentGame;
+					delete $rootScope.gameList;
+					delete $rootScope.gameBundles;
 
 					$timeout(function() {
 						$location.path("/").replace();
@@ -122,7 +163,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 				event.preventDefault();
 				return false;
 			}
-			if (event.keyCode === 13 && $scope.username && $scope.username.length != 0) {
+			if (event.keyCode === 13 && $scope.username && $scope.username.length) {
 				$scope.connect();
 			}
 		}
@@ -130,6 +171,10 @@ var app = angular.module("Valhalla", ["ngRoute"])
 	.controller("LobbyController", function($scope, $rootScope, $timeout, $http) {
 		$scope.headers = ["Games", "Create Game", "Settings"];
 		$scope.isShowingGameDetails = false;
+
+		$http.get($rootScope.hostname + "/gameList").then(function (response) {
+			$rootScope.gameList = response.data;
+		});
 
 		$scope.showGameDetails = function(game) {
 			$scope.game = game;
@@ -160,10 +205,6 @@ var app = angular.module("Valhalla", ["ngRoute"])
 	.controller("GameSetupController", function($scope, $rootScope, $http) {
 		$scope.gameOptions = {}
 
-		$http.get($rootScope.hostname + "/gameList").then(function (response) {
-			$rootScope.gameList = response.data;
-		});
-
 		$http.get($rootScope.hostname + "/gameBundles").then(function (response) {
 			$rootScope.gameBundles = response.data;
 			$scope.currentBundle = Object.keys($rootScope.gameBundles)[0];
@@ -184,6 +225,8 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			})
 		}
 	})
+	.controller("GameController", function($scope, $rootScope) {
+	})
 	.config(function($routeProvider, $sceProvider) {
 		$routeProvider.when("/", {
 			templateUrl: "static/login.html",
@@ -192,6 +235,9 @@ var app = angular.module("Valhalla", ["ngRoute"])
 		.when("/lobby", {
 			templateUrl: "static/lobby.html",
 			controller: "LobbyController"
+		})
+		.when("/game/:gameID", {
+			templateUrl: "static/game.html"
 		});
 
 		$sceProvider.enabled(false);

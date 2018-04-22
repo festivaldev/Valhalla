@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html ng-app="StarkAdmin" ng-controller="MainViewController">
+	<head>
+		<title>Bullshit Editor</title>
+		<meta charset="utf8">
+		<meta name="viewport" content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0">
+		
+		<link rel="stylesheet" href="css/framework7.ios.min.css">
+		<link rel="stylesheet" href="css/framework7.ios.colors.min.css">
+		<link rel="stylesheet" href="css/framework7-icons.css">
+		
+		<script src="js/angular.min.js"></script>
+		
+		<style>
+			* {
+				-webkit-font-smoothing: antialiased;
+			}
+			
+			input:-webkit-autofill {
+				box-shadow: 0 0 0px 1000px white inset !important;
+			}
+			
+			span.spacer {
+				display: inline-block;
+				height: 18px;
+				width: 50px;
+				box-shadow: 0 1px 0 0 #000;
+			}
+			
+			i.f7-icons {
+				font-size: 24px;
+				width: 24px;
+			}
+			
+			i.f7-icons.link {
+				font-size: 24px !important;
+				color: #007aff;
+			}
+			
+			.login-screen-title {
+				font-weight: 700;
+				font-size: 34px;
+			}
+			
+			.login-screen-content .login-button {
+				position: absolute;
+				bottom: 60px;
+				left: 50%;
+				width: calc(100% - 64px);
+				max-width: 480px;
+				height: 50px;
+				line-height: 50px;
+				text-align: center;
+				background-color: #007AFF;
+				color: white;
+				font-size: 16px;
+				font-weight: 500;
+				border-radius: 10px;
+				cursor: pointer;
+				transition: opacity .3s;
+				transform: translate3d(-50%, 0, 0);
+			}
+
+			.login-screen-content .login-button.active-state {
+				background-color: #007AFF;
+				opacity: 0.4;
+			}
+
+			.login-screen-content .item-content {
+				padding-right: 15px;
+			}
+			
+			.login-screen-content .item-inner {
+				padding-right: 0;
+			}
+			
+			@media all and (min-width: 630px) and (min-height: 630px) {
+				.popup:not(.tablet-fullscreen) {
+					border-radius: 10px;
+				}
+			}
+			
+			.panel-left.panel-cover {
+				transition: none;
+			}
+			
+			@media (max-width: 767px) {
+				.navbar .left .open-panel {
+					display: none;
+				}
+				.view-main {
+					display: none;
+				}
+				.panel.panel-left.panel-cover {
+					display: block;
+					left: 0;
+					width: 100%;
+					-webkit-transition: 0ms;
+					transition: 0ms;
+					transform: none !important;
+				}
+				body.with-panel-left-cover .panel-left {
+					-webkit-transform: translate3d(0%, 0, 0);
+					-ms-transform: translate3d(0%, 0, 0);
+					transform: translate3d(0%, 0, 0);
+					-webkit-transition: 0ms;
+					transition: 0ms;
+				}
+				.view-left .tablet-title {
+					display: none;
+				}
+			}
+			@media (min-width: 768px) {
+				.panel.panel-left.panel-cover {
+					box-shadow: 1px 0px 0px rgba(0, 0, 0, 0.2);
+					width: 320px;
+				}
+				.view-main .navbar .back {
+					display: none;
+				}
+				.view-left .mobile-title {
+					display: none;
+				}
+				.view-left .tablet-title {
+					display: block;
+				}
+			}
+			@media (min-width: 768px) and (max-width: 1023px) {
+				body.with-panel-left-cover .panel-left {
+					-webkit-transform: translate3d(100%, 0, 0);
+					-ms-transform: translate3d(100%, 0, 0);
+					transform: translate3d(100%, 0, 0);
+				}
+				.panel.panel-left.panel-cover {
+					left: -320px;
+				}
+			}
+			@media (min-width: 1024px) and (max-width: 1279px) {
+				.panel.panel-left.panel-cover {
+					display: block;
+					left: 0;
+					transform: none !important;
+				}
+				body.with-panel-left-cover .panel-left {
+					-webkit-transform: translate3d(0%, 0, 0);
+					-ms-transform: translate3d(0%, 0, 0);
+					transform: translate3d(0%, 0, 0);
+				}
+				.view-main {
+					float: right;
+					width: -webkit-calc(100% - 320px);
+					width: -moz-calc(100% - 320px);
+					width: -ms-calc(100% - 320px);
+					width: calc(100% - 320px);
+				}
+				.view-main .navbar .left .open-panel {
+					display: none;
+				}
+			}
+			@media (min-width: 1280px) {
+			    .panel.panel-left.panel-cover {
+					display: block;
+					left: 0;
+					transform: none !important;
+				}
+			    .view-main {
+			        box-shadow: 1px 0px 0px rgba(0, 0, 0, 0.2);
+			        left: 320px;
+			        width: calc(100% - 320px);
+			    }
+			    .panel.panel-right.panel-reveal {
+			        width: 320px;
+			        z-index: 6000;
+			        display: block;
+			    }
+			    .view-main .navbar .open-panel {
+					display: none;
+				}
+			}
+			
+			.navbar.large {
+				height: 98px;
+			}
+			
+			.navbar.large .navbar-inner {
+				align-items: start;
+			}
+			
+			.navbar.large .center {
+				position: absolute;
+				top: 0;
+				left: 0 !important;
+				font-size: 34px;
+				font-weight: 700;
+				margin: 50px 16px 0;
+			}
+			
+			.navbar.large .left, .navbar.large .right {
+				line-height: 44px;
+			}
+			
+			.navbar-large-through .page-content {
+				padding-top: 98px;
+			}
+			
+			
+			
+			.card {
+				box-shadow: 0 0 0 1px #d;
+				border-radius: 7px;
+				min-height: 135px;
+			}
+			
+			.card .card-text {
+				font-weight: 700;
+				font-size: 17px;
+				min-height: 44px;
+				position: relative;
+				padding: 10px 15px;
+				overflow: hidden;
+			}
+			
+			.card .card-input {
+				font-size: 17px;
+				font-weight: 700;
+				margin: 0;
+				border: none;
+				padding: 10px 15px;
+				width: 100%;
+				box-sizing: border-box;
+				background-color: transparent;
+				min-height: 91px;
+				resize: none;
+			}
+			
+			.card img {
+				max-width: 100%;
+			}
+			
+			.card .card-footer {
+				position: absolute;
+				left: 0;
+				right: 0;
+				bottom: 0;
+			}
+			
+			
+			html.pixel-ratio-2 .card-textarea:before {
+				-webkit-transform: scaleY(.5);
+				transform: scaleY(.5);
+			}
+			
+			.card-textarea a.link.active-state {
+				opacity: .3;
+				-webkit-transition-duration: 0s;
+				transition-duration: 0s;
+			}
+			
+			@media all and (max-width: 767px) {
+				.card {
+					margin: 10px 0;
+					border-radius: 0;
+				}
+			}
+		
+			
+			.list-block .item-title.label {
+				width: auto;
+			}
+			
+			.label-switch {
+				float: right;
+			}
+			
+			
+			.badge-wrapper {
+				position: absolute;
+				top: 10px;
+				right: 15px;
+			}
+			
+			.badge {
+				float: left;
+				font-size: 10px;
+				font-weight: 700;
+				text-transform: uppercase;
+				border-radius: 3px;
+				padding: 1px 4px;
+				color: #fff;
+				height: 16px;
+				line-height: 14px
+			}
+			
+			.badge:not(:last-child) {
+				margin-right: 5px;
+			}
+			
+			.badge.status-badge.active {
+				background: #34C749;
+			}
+			
+			.badge.status-badge.waiting {
+				background: #FDBC40;
+			}
+			
+			.badge.status-badge.attn {
+				background: #DF4744;
+			}
+			
+			.badge.visibility-badge {
+				top: 30px;
+				background: #aaa;
+			}
+			
+			.badge.paid-badge {
+				top: 30px;
+				background: #007aff;
+			}
+
+			.row {
+				justify-content: normal;
+			}
+		</style>
+	</head>
+	<body>
+		<div class="views">
+			<div class="panel panel-left panel-cover">
+				<div class="view view-left navbar-through">
+					<div class="navbar">
+						<div class="navbar-inner" data-page="index">
+							<div class="left sliding"></div>
+							<div class="center sliding">Bullshit Editor</div>
+							<div class="right sliding"><a href="#" class="link" ng-click="about()">About</a></div>
+						</div>
+					</div>
+					<div class="pages">
+						<div class="page" data-page="index">
+							<div class="page-content">
+								<div class="content-block-title">Cards Against Humanity</div>
+								<div class="list-block">
+									<ul>
+										<li>
+											<a href="static/categories.html" class="item-link item-content">
+												<div class="item-inner"> 
+													<div class="item-title">Decks</div>
+												</div>
+											</a>
+										</li>
+										<li>
+											<a href="static/blackcards.html" class="item-link item-content">
+												<div class="item-inner"> 
+													<div class="item-title">Calls</div>
+												</div>
+											</a>
+										</li>
+										<li>
+											<a href="static/whitecards.html" class="item-link item-content">
+												<div class="item-inner"> 
+													<div class="item-title">Responses</div>
+												</div>
+											</a>
+										</li>
+									</ul>
+									<!-- <div class="list-block-label">
+										<p>&copy {{date | date:'yyyy'}} FESTIVAL Development</p>
+									</div> -->
+								</div>
+								<div class="content-block-title">Quizzr</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="view view-main navbar-through">
+				<div class="navbar"></div>
+				<div class="pages">
+					<div class="page" data-page="placeholder">
+						<div class="page-content">
+							<div class="content-block-title">Placeholder</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<div class="popup" id="card-edit-popup">
+			<div class="view edit-view navbar-through" ng-controller="EditViewController">
+				<div class="navbar">
+					<div class="navbar-inner">
+						<div class="left sliding"><a href="#" class="link" ng-click="closePopup()">Close</a></div>
+						<div class="center sliding">Edit Card</div>
+						<div class="right sliding"><a href="#" class="link" ng-click="saveCard()" ng-disabled="!cardEditorForm.$valid"><b>Save</b></a></div>
+					</div>
+				</div>
+				<div class="pages">
+					<div class="page" data-page="package-details">
+						<div class="page-content">
+							<ng-form name="cardEditorForm">
+								<div class="list-block tablet-inset">
+									<ul>
+										<li class="align-top">
+											<div class="item-content">
+												<div class="item-inner">
+													<div class="item-input">
+														<textarea placeholder="Display Text" name="text" ng-model="$root.editingCard.text" required="" style="height: 175px;"></textarea>
+													</div>
+												</div>
+											</div>
+										</li>
+										<li ng-if="isAddingCall">
+											<a href="static/blackcards_syntax.html" class="item-link item-content">
+												<div class="item-inner">
+													<div class="item-title">Syntax Help</div>
+												</div>
+											</a>
+										</li>
+									</ul>
+								</div>
+								<!-- <div class="content-block-title">Assigned Deck</div> -->
+								<div class="list-block tablet-inset">
+									<ul>
+										<li>
+											<a href="#" class="item-link smart-select" data-back-text="Edit Card">
+												<select name="deckId" ng-options="deck.id as deck.name for deck in decks" ng-model="$root.editingCard.deckId">
+													<option value="">None</option>
+												</select>
+												<div class="item-content">
+													<div class="item-inner">
+														<div class="item-title">Assigned Deck</div>
+														<div class="item-after">None</div>
+													</div>
+												</div>
+											</a>
+										</li>
+									</ul>
+								</div>
+							</ng-form>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		
+		<script type="text/javascript" src="js/framework7.min.js"></script>
+		<script type="text/javascript" src="js/framework7.angular.hook.js"></script>
+		<script type="text/javascript" src="js/app.js"></script>
+	</body>

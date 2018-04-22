@@ -2,7 +2,8 @@ var Player = function(_user) {
 	var player = this;
 
 	var user = _user,
-		score = 0;
+		score = 0,
+		hand = [];
 	
 	player.getUser = function() {
 		return user;
@@ -26,6 +27,14 @@ var Player = function(_user) {
 
 	player.resetScore = function() {
 		score = 0;
+	}
+
+	player.getHand = function() {
+		return hand;
+	}
+
+	player.setHand = function (_hand) {
+		hand = _hand;
 	}
 
 	player.toString = function() {

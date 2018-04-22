@@ -1,0 +1,45 @@
+<div class="navbar">
+	<div class="navbar-inner" ng-controller="WhiteCardsController" ng-cloak>
+		<div class="left sliding"><a href="#" class="back link"><i class="icon icon-back"></i><span>Bullshit Editor</span></a></div>
+		<div class="center sliding">Responses ({{responses.length || "0"}})</div>
+		<div class="right sliding"><a href="#" class="link" ng-click="addResponse()"><i class="f7-icons">add</i></a></div>
+	</div>
+</div>
+<div class="page" data-page="packages" ng-controller="WhiteCardsController">
+	<!--<form class="searchbar">
+		<div class="searchbar-input">
+			<input type="search" placeholder="Search">
+			<a href="#" class="searchbar-clear"></a>
+		</div>
+		<a href="#" class="searchbar-cancel">Cancel</a>
+	</form>-->
+	<div class="page-content" ng-cloak>
+		<div class="row no-gutter">
+			<div class="col-50 tablet-33" ng-repeat="card in responses">
+				<div class="card black-card">
+					<div class="card-text" ng-bind-html="card.text | nl2br"></div>
+					<div class="card-footer">
+						<a href="#" class="link color-red" ng-click="deleteResponse(card)">Delete</a>
+						<a href="#" class="link" ng-click="editResponse(card)">Edit</a>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="list-block" ng-if="responses.length == 0">
+			<div class="list-block-label">There are no cards that could be displayed.</div>
+		</div>
+		<!--<div class="block">
+			<div class="row">
+				<div class="col-33" ng-repeat="package in packageData">
+					<div class="package">
+						<div class="package-header">
+							<p class="package-title">{{package.name}}</p>
+							<span class="package-status ready"></span>
+						</div>
+						<p class="package-description">{{package.shortDescription}}</p>
+					</div>
+				</div>
+			</div>
+		</div>-->
+	</div>
+</div>

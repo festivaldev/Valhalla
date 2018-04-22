@@ -87,3 +87,6 @@ typings/
 
 # next.js build output
 .next
+
+# files
+cards.db

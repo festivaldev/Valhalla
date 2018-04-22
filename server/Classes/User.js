@@ -1,11 +1,11 @@
 var log = require("../log");
 
-var User = function (_username, _socketId, _isAdmin) {
+var User = function (_username, _socketID, _isAdmin) {
 	var user = this;
 
 	var username = _username,
 		currentGame = null,
-		socketId = _socketId,
+		socketID = _socketID,
 		isAdmin = _isAdmin;
 
 	user.isAdmin = function () {
@@ -14,15 +14,15 @@ var User = function (_username, _socketId, _isAdmin) {
 	user.getUsername = function () {
 		return username;
 	}
-	user.getSocketId = function () {
-		return socketId;
+	user.getSocketID = function () {
+		return socketID;
 	}
 	user.toString = function () {
 		return user.getUsername();
 	}
 
 	user.noLongerValid = function() {
-		if (currentGame != null) {
+		if (currentGame) {
 			currentGame.removePlayer(user);
 		}
 	}
@@ -31,7 +31,7 @@ var User = function (_username, _socketId, _isAdmin) {
 		return currentGame;
 	}
 	user.joinGame = function (game) {
-		if (currentGame != null) {
+		if (currentGame) {
 			return;
 		}
 

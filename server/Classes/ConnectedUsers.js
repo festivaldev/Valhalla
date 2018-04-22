@@ -7,16 +7,16 @@ var ConnectedUsers = function () {
 
 	var kServerMaxUsers = config.server.maxUsers;
 
-	connectedUsers.hasUser = function (socketId) {
-		return users[socketId] != null;
+	connectedUsers.hasUser = function (socketID) {
+		return users[socketID] != null;
 	}
 
-	connectedUsers.getUser = function (socketId) {
-		return users[socketId];
+	connectedUsers.getUser = function (socketID) {
+		return users[socketID];
 	}
 
 	connectedUsers.addUser = function (user) {
-		if (this.hasUser(user.getSocketId())) {
+		if (this.hasUser(user.getSocketID())) {
 			// User already exists
 			return false;
 		} else if (Object.keys(users).length >= kServerMaxUsers && !user.isAdmin()) {
@@ -25,16 +25,16 @@ var ConnectedUsers = function () {
 		} else {
 			// User is allowed to enter server
 			log.info(String.format("User {0} connected (admin={1})", user.toString(), user.isAdmin()));
-			users[user.getSocketId()] = user;
+			users[user.getSocketID()] = user;
 
 			return true;
 		}
 	}
 
-	connectedUsers.removeUser = function(socketId) {
-		if (this.hasUser(socketId)) {
-			users[socketId].noLongerValid();
-			delete users[socketId];
+	connectedUsers.removeUser = function(socketID) {
+		if (this.hasUser(socketID)) {
+			users[socketID].noLongerValid();
+			delete users[socketID];
 		}
 	}
 

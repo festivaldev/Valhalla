@@ -1,36 +1,58 @@
 * {
-    margin: 0;
-    padding: 0;
-    border: none;
-    box-sizing: border-box;
-    font-family: "SF Compact Text", -apple-system, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
-    font-size: 15px;
-    -webkit-font-smoothing: antialiased;
+	margin: 0;
+	padding: 0;
+	border: none;
+	box-sizing: border-box;
+	font-family: "SF Compact Text", -apple-system, 'Segoe UI', 'Open Sans', 'Helvetica Neue', sans-serif;
+	font-size: 15px;
+	-webkit-font-smoothing: antialiased;
 }
 
 html,
 body {
-    background-color: #0099BC;
-    overflow: hidden;
+	background-color: #0099BC;
+	overflow: hidden;
 }
 
 :disabled {
-    cursor: default;
-    opacity: 0.4 !important;
+	cursor: default;
+	opacity: 0.4 !important;
 }
 
-// ng-form input,
-// ng-form select {
-//     display: block;
-
-//     label + & {
-//         display: inline-block;
-
-//         & + * {
-//             display: block;
-//         }
-//     }
-// }
+h1,
+p.h1 {
+	font-size: 46px;
+	font-weight: 200;
+	line-height: 45px;
+	margin-bottom: 30px;
+}
+h2,
+p.h2 {
+	font-size: 34px;
+	font-weight: 200;
+	line-height: 35px;
+	margin-bottom: 30px;
+}
+* + h2,
+* + p.h2 {
+	margin-top: 30px;
+}
+h3,
+p.h3 {
+	font-size: 24px;
+	line-height: 28px;
+	margin-bottom: 30px;
+}
+* + h3,
+* + p.h3 {
+	margin-top: 30px;
+}
+h4,
+p.h4 {
+	font-size: 20px;
+	line-height: 25px;
+	margin-bottom: 30px;
+}
 
 @import "input";
 @import "buttons";
@@ -39,3 +61,4 @@ body {
 @import "tabs";
 @import "login";
 @import "lobby";
+@import "game";

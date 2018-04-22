@@ -19,7 +19,7 @@ String.format = function (format) {
 /**
  * Determines if Node.js is currently in the process of shutting down
  */
-var isShuttingDown = false;
+global.isShuttingDown = false;
 
 /**
  * Important NPM includes, and the currently used server port
@@ -31,7 +31,11 @@ var app = require("express")(),
 	fs = require("fs"),
 	path = require("path"),
 	log = require("./log"),
+	seedrandom = require("seedrandom"),
+	sqlite3 = require("sqlite3"),
 	serverPort = 8080;
+
+seedrandom((new Date()).getTime(), { global: true });
 
 global.app = app;
 global.io = io;
@@ -69,9 +73,11 @@ var Server = require("./Classes/Server"),
 	ConnectedUsers = require("./Classes/ConnectedUsers"),
 	GameManager = require("./Classes/GameManager"),
 	User = require("./Classes/User.js"),
-	API = require("./api");
+	API = require("./api"),
+	Broadcaster = require("./Classes/Broadcaster");
 
 global.server = new Server(new ConnectedUsers(), new GameManager());
+global.Broadcaster = Broadcaster;
 
 /**
  * Handler for receiving SIGINT (^C)
@@ -93,6 +99,7 @@ readline.on("SIGINT", function() {
  */
 process.on("uncaughtException", function (error) {
 	log.error(error.message);
+	console.log(error);
 });
 
 /**
@@ -121,11 +128,19 @@ io.on("connection", function(socket) {
 
 		if (user) {
 			switch (data.type) {
+				case "ping":
+					io.to(socket.id).emit("_receivePackage", { type: "pong" });
+					break;
 				case "createGame":
 					server.gameManager().createGameWithPlayer(data.data.gameBundle, data.data.gameOptions, user);
 					break;
 				case "joinGame":
 					server.gameManager().getGameByID(data.data.gameID).addPlayer(user, data.data.password);
+					break;
+				case "leaveGame":
+					break;
+				case "startGame":
+					user.getGame().gameBundle.gameLogic.start();
 					break;
 				default: break;
 			}
