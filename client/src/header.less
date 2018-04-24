@@ -75,6 +75,64 @@ header {
         }
     }
 
+    .buttons {
+        position: absolute;
+        bottom: 0;
+        right: 50px;
+        height: 50px;
+
+        .button {
+            float: right;
+            width: 50px;
+            height: 50px;
+
+            &.chat-button {
+                .badge {
+                    position: absolute;
+                    top: 16px;
+                    left: 28px;
+                    width: 18px;
+                    height: 18px;
+                    border-radius: 9px;
+                    background-color: #0099BC;
+                    color: #FFF;
+                    line-height: 18px;
+                    text-align: center;
+                    font-size: 12px;
+                    font-weight: 500;
+
+                    display: none;
+                }
+
+                &:after {
+                    content: '\E206';
+                    font-family: "SegoeMDL2Assets";
+                    font-size: 22px;
+                    position: absolute;
+                    width: 50px;
+                    height: 50px;
+                    text-align: center;
+                    line-height: 50px;
+                }
+
+                &.new {
+                    &:after {
+                        width: 25px;
+                        font-size: 18px;
+                    }
+
+                    .badge {
+                        display: block;
+                    }
+                }
+            }
+
+            &:hover {
+                background-color: rgba(0,0,0,0.1);
+            }
+        }
+    }
+
     .expand-button {
         position: absolute;
         bottom: 0;

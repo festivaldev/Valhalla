@@ -13,7 +13,8 @@ var Broadcaster = {
 				hostID: game.getHost().getUser().getSocketID(),
 				playerCount: game.getPlayers().length,
 				maxPlayers: game.getOptions(false).playerLimit,
-				passworded: game.getOptions(true).password != null && game.getOptions(true).password.length
+				passworded: game.getOptions(true).password != null && game.getOptions(true).password.length,
+				playerInfo: game.getAllPlayerInfo()
 			});
 		}
 
@@ -41,7 +42,22 @@ var Broadcaster = {
 		});
 	},
 
-	playerInfoChanged: function(game, usersInGame) {
+	playerJoinedGame: function(playersInGame, gameData) {
+		playersInGame.forEach(function(player, index) {
+			io.to(player.getUser().getSocketID()).emit("_receivePackage", {
+				type: "playerJoinedGame",
+				data: {
+					host: gameData[0],
+					hostID: gameData[1],
+					usernames: gameData[2],
+					gameInfo: gameData[3],
+					playerInfo: gameData[4]
+				}
+			})
+		})
+	},
+
+	playerInfoChanged: function(game, players) {
 		players.forEach(function(player, index) {
 			io.to(player.getUser().getSocketID()).emit("_receivePackage", {
 				type: "playerInfoChanged",

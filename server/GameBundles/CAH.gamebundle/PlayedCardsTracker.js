@@ -9,11 +9,11 @@ var PlayedCardsTracker = function() {
 
 		if (!cards) {
 			cards = [];
-			playerCardMap[player.getUser().getSocketID()] = cards;
 		}
 
 		reverseIDMap[card.getID()] = player;
 		cards.push(card);
+		playerCardMap[player.getUser().getSocketID()] = cards;
 	}
 
 	tracker.getPlayerForID = function(id) {
@@ -24,7 +24,7 @@ var PlayedCardsTracker = function() {
 		return playerCardMap[player.getUser().getSocketID()] != null;
 	}
 
-	tracker.getCardsForPlayer = function() {
+	tracker.cardsForPlayer = function(player) {
 		return playerCardMap[player.getUser().getSocketID()];
 	}
 

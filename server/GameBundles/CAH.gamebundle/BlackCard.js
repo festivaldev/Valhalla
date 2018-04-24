@@ -21,16 +21,23 @@ var BlackCard = function(_id, _text, _deck, _isBlank) {
 	}
 
 	blackCard.getPick = function() {
-		return (new Set(raw.match(/(\_|\{.[0-9]*\})/g))).size;
+		var underscores = raw.match(/\_/g) || [];
+		var interpolations = (new Set(raw.match(/\{.[0-9]*\}/g))).size || 0;
+		return Math.max(underscores.length + interpolations, 1);
 	}
 
 	blackCard.clientInfo = function() {
+		var underscores = raw.match(/\_/g) || [];
+		var interpolations = (new Set(raw.match(/\{.[0-9]*\}/g))).size || 0;
+
 		return {
 			id: id,
 			raw: raw,
 			text: text,
-			pick: pick,
-			isBlank: isBlank
+			deck: deck,
+			pick: blackCard.getPick(),
+			isBlank: isBlank,
+			append: underscores.length + interpolations == 0
 		}
 	}
 }

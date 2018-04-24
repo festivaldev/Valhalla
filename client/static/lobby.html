@@ -94,14 +94,14 @@
 		</table>
 		<div class="player-info-wrapper">
 			<table class="player-info" style="margin-top: 0">
-				<!-- <tr ng-repeat="n in [] | range:10">
-					<td>test</td>
-					<td>-1</td>
+				<tr ng-repeat="player in game.playerInfo">
+					<td>{{player.name}}</td>
+					<td>{{player.score}}</td>
 					<td>NaN</td>
-				</tr> -->
-				<tr>
-					<td colspan="3">Server is not responding.</td>
 				</tr>
+				<!-- <tr>
+					<td colspan="3">Server is not responding.</td>
+				</tr> -->
 			</table>
 		</div>
 		<button class="join-game" ng-if="!game.passworded" ng-click="joinGame(game)">Join Game</button>

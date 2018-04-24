@@ -6,6 +6,17 @@ var config = require("../../ServerConfig.json"),
 	PlayedCardsTracker = require("./PlayedCardsTracker"),
 	log = require("../../log");
 
+var shuffle = function (a) {
+	for (var i = a.length - 1; i > 0; i--) {
+		var j = Math.floor(Math.random() * (i + 1));
+		var t = a[i];
+		a[i] = a[j];
+		a[j] = t;
+	}
+
+	return a;
+}
+
 var GameState = {
 	LOBBY: 0,
 	DEALING: 1,
@@ -35,7 +46,8 @@ var GameLogic = function() {
 		blackCard = null,
 		whiteDeck = null,
 		playedCards = new PlayedCardsTracker(),
-		selectedBlackCard = null;
+		selectedBlackCard = null,
+		rawPossibleBlackCards = [];
 	
 	var winStateTimeout;
 
@@ -51,7 +63,6 @@ var GameLogic = function() {
 			judgeIndex = Math.floor(Math.random() * numPlayers);
 			started = true;
 		}
-		started = true;
 
 		if (started) {
 			log.info(String.format("Starting game {0}", gameLogic.game.getID()));
@@ -73,6 +84,13 @@ var GameLogic = function() {
 					log.warn("White Deck hasn't finished loading!");
 				}
 			}, 50);
+		}
+	}
+
+	gameLogic.playerLeft = function(player) {
+		var players = gameLogic.game.getPlayers();
+		if (players.length < 3 && gameLogic.state != 0) {
+			resetState(true);
 		}
 	}
 
@@ -99,7 +117,6 @@ var GameLogic = function() {
 			return;
 		}
 
-		console.log(whiteDeck.totalCount());
 		if (whiteDeck.totalCount() < players.length * 10) {
 			log.error("NOT ENOUGH CARDS TO START GAME! ABORTING!");
 			return;
@@ -137,7 +154,7 @@ var GameLogic = function() {
 
 		if (selectedBlackCard) {
 			blackCard = rawPossibleBlackCards.find((card) => card.getID() === selectedBlackCard.id);
-			blackDeck.reshuffleUnusedCard(rawPossibleBlackCardsfind((card) => card != blackCard));
+			blackDeck.reshuffleUnusedCard(rawPossibleBlackCards.find((card) => card != blackCard));
 
 			selectedBlackCard = null;
 		}
@@ -161,13 +178,15 @@ var GameLogic = function() {
 			return;
 		}
 
+		gameLogic.state = GameState.JUDGING;
+
 		var whiteCardsToPlayers = getWhiteCards();
 		Broadcaster.gameStateChanged(players, {
 			blackCard: JSON.stringify(blackCard.clientInfo()),
 			gameState: gameLogic.state,
 			judge: players[judgeIndex].getUser().getSocketID(),
 			playerInfo: gameLogic.game.getAllPlayerInfo(),
-			whiteCards: JSON.stringify(whiteCards)
+			whiteCards: JSON.stringify(whiteCardsToPlayers)
 		})
 	}
 
@@ -233,7 +252,8 @@ var GameLogic = function() {
 	}
 
 	var playCard = function(user, cardID, cardText) {
-		var player = gameLogic.game.getPlayerForUser();
+		var player = gameLogic.game.getPlayerForUser(user);
+
 		if (player) {
 			if (getJudge() == player || gameLogic.state != GameState.PLAYING) {
 				return;
@@ -252,7 +272,7 @@ var GameLogic = function() {
 						playedCard.setText(cardText);
 					}
 
-					hand.splice(index, 1);
+					hand.splice(i, 1);
 					break;
 				}
 			}
@@ -261,7 +281,8 @@ var GameLogic = function() {
 				playedCards.addCard(player, playedCard);
 				Broadcaster.playerInfoChanged(gameLogic.game, gameLogic.game.getPlayers());
 
-				if (startJudging()) {
+				var _startJudging = startJudging();
+				if (_startJudging) {
 					judgingState();
 				}
 			} else {
@@ -274,7 +295,7 @@ var GameLogic = function() {
 
 	var judgeCard = function(user, cardID) {
 		var players = gameLogic.game.getPlayers();
-		var player = gameLogic.game.getPlayerForUser();
+		var player = gameLogic.game.getPlayerForUser(user);
 
 		if (getJudge() != player || gameLogic.state != GameState.JUDGING) {
 			return;
@@ -286,14 +307,13 @@ var GameLogic = function() {
 		}
 		cardPlayer.increaseScore();
 
-		var clientCardID = playedCards.getCards(cardPlayer)[0].getID();
-		if (cardPlayer.getScore < gameLogic.game.getOptions(false).scoreGoal) {
-			var possibleBlackCards = [],
-				rawPossibleBlackCards = [],
+		var clientCardID = playedCards.cardsForPlayer(cardPlayer)[0].getID();
+		if (cardPlayer.getScore() < gameLogic.game.getOptions(false).scoreGoal) {
+			var possibleBlackCards = [];
+			rawPossibleBlackCards = [],
 
 			// TODO: Custom black card
 			rawPossibleBlackCards = getPossibleNextBlackCards();
-
 			rawPossibleBlackCards.forEach(function(card, index) {
 				possibleBlackCards.push(card.clientInfo());
 			});
@@ -308,7 +328,7 @@ var GameLogic = function() {
 	}
 
 	var setBlackCard = function(user, card) {
-		var player = gameLogic.game.getPlayerForUser();
+		var player = gameLogic.game.getPlayerForUser(user);
 
 		if (getJudge() != player) {
 			return;
@@ -411,7 +431,7 @@ var GameLogic = function() {
 						break;
 					}
 
-					var playerCards = playedCards.getCards(player);
+					var playerCards = playedCards.cards(player);
 					var pick = blackCard.getPick();
 
 					if (playedCards && blackCard && playerCards.length == pick) {
@@ -434,6 +454,27 @@ var GameLogic = function() {
 		}
 
 		return playerStatus;
+	}
+
+	var startJudging = function() {
+		if (gameLogic.state != GameState.PLAYING) {
+			return false;
+		}
+
+		if (playedCards.size() == roundPlayers.length) {
+			var startJudging = true;
+
+			for (var i=0; i<playedCards.size(); i++) {
+				if (playedCards.cards()[i].length != blackCard.getPick()) {
+					startJudging = false;
+					break;
+				}
+			}
+
+			return startJudging;
+		} else {
+			return false;
+		}
 	}
 }
 

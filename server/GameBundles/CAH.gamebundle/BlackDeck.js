@@ -9,6 +9,8 @@ var shuffle = function(a) {
 		a[i] = a[j];
 		a[j] = t;
 	}
+
+	return a;
 }
 
 var BlackDeck = function(sets) {
@@ -30,7 +32,7 @@ var BlackDeck = function(sets) {
 					}
 				});
 
-				shuffle(deck);
+				deck = shuffle(deck);
 				hasFinishedLoading = true;
 			});
 		});
@@ -60,7 +62,7 @@ var BlackDeck = function(sets) {
 			cards.push(blackDeck.getNextCard());
 		}
 
-		var blankBlackCard = new BlackCard("blank-black", [], id, true);
+		var blankBlackCard = new BlackCard("blank-black", "_", "0", true);
 		cards.push(blankBlackCard);
 
 		return cards;
@@ -68,7 +70,7 @@ var BlackDeck = function(sets) {
 
 	blackDeck.reshuffleUnusedCard = function(card) {
 		deck.push(card);
-		shuffle(deck);
+		deck = shuffle(deck);
 	}
 
 	blackDeck.discard = function(card) {

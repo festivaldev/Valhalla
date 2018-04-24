@@ -4,10 +4,31 @@
 
 		<div class="title lowered">{{currentGame.host}}'s Game</div>
 
+		<div class="buttons">
+			<div class="button chat-button new">
+				<div class="badge">1</div>
+			</div>
+		</div>
 		<div class="expand-button" ng-click="expandHeader = !expandHeader"></div>
 	</header>
 
 	<div class="page-content">
+			<div class="scoreboard" ng-class="{'visible': showScoreboard}">
+				<h1>Scores – {{currentGame.host}}</h1>
+
+				<table>
+					<tr>
+						<th>Player Name</th>
+						<th>Score</th>
+						<th>Time</th>
+					</tr>
+					<tr ng-repeat="player in currentGame.playerInfo">
+						<td>{{player.name}}</td>
+						<td>{{player.score}}</td>
+						<td>NaN</td>
+					</tr>
+				</table>
+			</div>
 		<ng-include ng-if="currentGame" src="hostname +'/' + currentGame.gameBundle.clientDir + '/game.html'" />
 	</div>
 </div>

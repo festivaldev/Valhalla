@@ -13,7 +13,7 @@
 		$createdOn = strtotime($call["created_at"]) * 1000;
 
 		//echo "$text\n";
-		$db->exec("INSERT INTO calls (`id`, `text`, `deckId`, `createdOn`, `updatedOn`) VALUES ('$id', '" . SQLite3::escapeString(addslashes($text)) . "', '0', '$createdOn', '$createdOn')");
+		$db->exec("INSERT INTO calls (`id`, `text`, `deckId`, `createdOn`, `updatedOn`) VALUES ('$id', '" . SQLite3::escapeString($text) . "', '0', '$createdOn', '$createdOn')");
 	}
 
 	// convert responses
@@ -26,6 +26,6 @@
 		$createdOn = strtotime($response["created_at"]) * 1000;
 
 		//echo "$text\n";
-		$db->exec("INSERT INTO responses (`id`, `text`, `deckId`, `createdOn`, `updatedOn`) VALUES ('$id', '" . SQLite3::escapeString(addslashes($text)) . "', '0', '$createdOn', '$createdOn')");
+		$db->exec("INSERT INTO responses (`id`, `text`, `deckId`, `createdOn`, `updatedOn`) VALUES ('$id', '" . SQLite3::escapeString($text) . "', '0', '$createdOn', '$createdOn')");
 	}
 ?>

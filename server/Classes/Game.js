@@ -136,6 +136,7 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 		}
 
 		io.to(user.getSocketID()).emit("_receivePackage", { type: "joinedGame", data: { gameID: id, gameInfo: game.getInfo(false) } });
+		Broadcaster.playerJoinedGame(players, [host.getUser().getUsername(), host.getUser().getSocketID(), game.getPlayerNames(), game.getInfo(true), game.getAllPlayerInfo()]);
 		Broadcaster.updateGameList();
 	}
 
@@ -160,6 +161,8 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 
 			if (players.length) {
 				// TODO: player stuff
+				game.gameBundle.gameLogic.playerLeft(player);
+				Broadcaster.playerJoinedGame(players, [host.getUser().getUsername(), host.getUser().getSocketID(), game.getPlayerNames(), game.getInfo(true), game.getAllPlayerInfo()]);
 				Broadcaster.updateGameList();
 			} else {
 				gameManager.destroyGame(id);
@@ -169,6 +172,10 @@ var Game = function (_gameBundle, _id, _connectedUsers, _gameManager) {
 
 	game.setGameSettings = function (gameOptions) {
 		options = new GameOptions(gameBundle).deserialize(gameOptions);
+	}
+
+	game.requestSent = function(user, data) {
+		game.gameBundle.gameLogic.handleRequest(user, data);
 	}
 }
 

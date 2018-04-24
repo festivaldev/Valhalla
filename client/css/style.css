@@ -151,6 +151,52 @@ header ul li:hover:after {
   left: 10px;
   right: 10px;
 }
+header .buttons {
+  position: absolute;
+  bottom: 0;
+  right: 50px;
+  height: 50px;
+}
+header .buttons .button {
+  float: right;
+  width: 50px;
+  height: 50px;
+}
+header .buttons .button.chat-button .badge {
+  position: absolute;
+  top: 16px;
+  left: 28px;
+  width: 18px;
+  height: 18px;
+  border-radius: 9px;
+  background-color: #0099BC;
+  color: #FFF;
+  line-height: 18px;
+  text-align: center;
+  font-size: 12px;
+  font-weight: 500;
+  display: none;
+}
+header .buttons .button.chat-button:after {
+  content: '\E206';
+  font-family: "SegoeMDL2Assets";
+  font-size: 22px;
+  position: absolute;
+  width: 50px;
+  height: 50px;
+  text-align: center;
+  line-height: 50px;
+}
+header .buttons .button.chat-button.new:after {
+  width: 25px;
+  font-size: 18px;
+}
+header .buttons .button.chat-button.new .badge {
+  display: block;
+}
+header .buttons .button:hover {
+  background-color: rgba(0, 0, 0, 0.1);
+}
 header .expand-button {
   position: absolute;
   bottom: 0;
@@ -579,4 +625,53 @@ fieldset table tr td:first-child {
 }
 .game button {
   background-color: #0099BC;
+}
+.scoreboard {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: 1024px;
+  max-width: calc(100% - 100px);
+  min-height: 100px;
+  transform: translate3d(-50%, -50%, 0);
+  z-index: 50;
+  border-radius: 25px;
+  -webkit-backdrop-filter: blur(20px);
+  box-shadow: 0 0 0 1px #ccc, 1px 26px 22px rgba(0, 0, 0, 0.07);
+  background-color: rgba(230, 230, 230, 0.4);
+  transition: transform 0.2s ease-out, opacity 0.15s ease-out, visibility 0.3s linear;
+  padding: 15px;
+}
+.scoreboard:not(.visible) {
+  opacity: 0;
+  transform: translate3d(-50%, -50%, 0) scale(0.9);
+  visibility: hidden;
+}
+.scoreboard h1 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.scoreboard table {
+  width: 100%;
+  margin-top: 15px;
+}
+.scoreboard table tr th {
+  text-align: left;
+  font-size: 13px;
+  font-weight: 500;
+}
+.scoreboard table tr th:nth-child(1),
+.scoreboard table tr td:nth-child(1) {
+  width: 50%;
+}
+.scoreboard table tr th:nth-child(2),
+.scoreboard table tr td:nth-child(2),
+.scoreboard table tr th:nth-child(3),
+.scoreboard table tr td:nth-child(3) {
+  width: 25%;
+}
+.scoreboard table tr td {
+  line-height: 50px;
+  font-size: 22px;
 }

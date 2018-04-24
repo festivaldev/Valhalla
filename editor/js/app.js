@@ -150,6 +150,7 @@ var f7,
 				deckId: "0"
 			};
 			$rootScope.isAddingCall = true;
+			$rootScope.isAddingResponse = false;
 			f7.popup("#card-edit-popup");
 
 			$timeout(function () {
@@ -161,6 +162,7 @@ var f7,
 		$scope.editCall = function(call) {
 			$rootScope.editingCard = angular.copy(call);
 			$rootScope.isAddingCall = true;
+			$rootScope.isAddingResponse = false;
 			f7.popup("#card-edit-popup");
 
 			$timeout(function () {
@@ -194,6 +196,7 @@ var f7,
 				text: "",
 				deckId: "0"
 			};
+			$rootScope.isAddingCall = false;
 			$rootScope.isAddingResponse = true;
 			f7.popup("#card-edit-popup");
 
@@ -205,6 +208,7 @@ var f7,
 
 		$scope.editResponse = function (response) {
 			$rootScope.editingCard = angular.copy(response);
+			$rootScope.isAddingCall = false;
 			$rootScope.isAddingResponse = true;
 			f7.popup("#card-edit-popup");
 

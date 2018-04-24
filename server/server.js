@@ -142,6 +142,9 @@ io.on("connection", function(socket) {
 				case "startGame":
 					user.getGame().gameBundle.gameLogic.start();
 					break;
+				case "sendRequestToGame":
+					user.getGame().requestSent(user, data.data);
+					break;
 				default: break;
 			}
 		}

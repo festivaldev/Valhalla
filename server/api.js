@@ -19,7 +19,8 @@ var api = {
 				gameMode: game.gameBundle.clientInfo().displayName,
 				playerCount: game.getPlayers().length,
 				maxPlayers: game.getOptions(false).playerLimit,
-				passworded: game.getOptions(true).password != null && game.getOptions(true).password.length > 0
+				passworded: game.getOptions(true).password != null && game.getOptions(true).password.length > 0,
+				playerInfo: game.getAllPlayerInfo()
 			})
 		}
 

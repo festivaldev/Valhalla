@@ -1,3 +1,23 @@
+String.format = function (format) {
+	var args = Array.prototype.slice.call(arguments, 1);
+	return format.replace(/{(\d+)}/g, function (match, number) {
+		return typeof args[number] != 'undefined' ? args[number] : match;
+	});
+};
+
+String.formatWithArray = function (format) {
+	var args = Array.prototype.slice.call(arguments, 1);
+	var array = args[0];
+
+	if (typeof (array) !== "object") {
+		return String.format(format);
+	}
+
+	return format.replace(/{(\d+)}/g, function (match, number) {
+		return typeof array[number] != 'undefined' ? array[number] : match;
+	});
+}
+
 var socket,
 	gameScripts = {},
 	latencyCheck;
@@ -11,6 +31,7 @@ var PackageHandler = function($rootScope, $location) {
 				});
 				break;
 			case "updateGameList":
+				console.log(data.data);
 				$rootScope.$apply(function () {
 					$rootScope.gameList = data.data.gameList;
 					$rootScope.gameBundles = data.data.bundles;
@@ -24,6 +45,23 @@ var PackageHandler = function($rootScope, $location) {
 				break;
 			case "joinGameFailed":
 				alert("Joining this game failed. Reason: " + data.data.reason);
+				break;
+			case "playerJoinedGame":
+				if ($rootScope.currentGame) {
+					$rootScope.$apply(function () {
+						$rootScope.currentGame.players = data.data.usernames;
+						$rootScope.currentGame.host = data.data.host;
+						$rootScope.currentGame.hostID = data.data.hostID;
+						$rootScope.currentGame.playerInfo = data.data.playerInfo;
+					});
+				}
+				break;
+			case "playerInfoChanged":
+				if ($rootScope.currentGame) {
+					$rootScope.$apply(function () {
+						$rootScope.currentGame.playerInfo = data.data.playerInfo;
+					});
+				}
 				break;
 			case "gameEvent":
 				$rootScope.gameScripts[$rootScope.currentGame.gameBundle.clientDir].handleGameEvent(data);
@@ -45,6 +83,17 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			}
 			return input;
 		};
+	})
+	.filter('nl2br', ['$sce', function ($sce) {
+		return function (text) {
+			return text ? $sce.trustAsHtml(text.replace(/\n/g, '<br/>')) : '';
+		};
+	}])
+	.filter("render", function ($sce) {
+		return function (text) {
+			//return text.join("<span class=\"spacer\"></span>");
+			return $sce.trustAsHtml(text.replace(/(\_|\{.[0-9]*\})/g, "<span class=\"spacer\"></span>").replace(/\\/g, ""));
+		}
 	})
 	.directive("tabHeader", function() {
 		return {
@@ -96,7 +145,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 				$scope.isConnecting = false;
 			} else {
 				if (!$scope.username) {
-					return;
+					//return;
 				}
 
 				$scope.isConnecting = true;
@@ -105,7 +154,8 @@ var app = angular.module("Valhalla", ["ngRoute"])
 					secure: true,
 					multiplex: false,
 					"force new connection": true,
-					query: "username=" + $scope.username,
+					//query: "username=" + $scope.username,
+					query: "username="+(new Date()).getTime(),
 					"reconnectionDelay": 1000,
 					"reconnectionDelayMax": 1000,
 					"reconnectionAttempts": 5
@@ -157,6 +207,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 				});
 			}
 		}
+		$scope.connect();
 
 		$scope.inputKeydown = function(event) {
 			if ($scope.isConnecting) {
@@ -203,7 +254,7 @@ var app = angular.module("Valhalla", ["ngRoute"])
 		}
 	})
 	.controller("GameSetupController", function($scope, $rootScope, $http) {
-		$scope.gameOptions = {}
+		$scope.gameOptions = {};
 
 		$http.get($rootScope.hostname + "/gameBundles").then(function (response) {
 			$rootScope.gameBundles = response.data;
@@ -226,6 +277,28 @@ var app = angular.module("Valhalla", ["ngRoute"])
 		}
 	})
 	.controller("GameController", function($scope, $rootScope) {
+		$scope.showScoreboard = false;
+		$scope.gameLogic = $rootScope.gameScripts[$rootScope.currentGame.gameBundle.clientDir];
+
+		window.addEventListener("keydown", function(e) {
+			if (e.keyCode == 9) {
+				e.preventDefault();
+
+				$rootScope.$apply(function() {
+					$scope.showScoreboard = true;
+				});
+			}
+		});
+
+		window.addEventListener("keyup", function(e) {
+			if (e.keyCode == 9) {
+				e.preventDefault();
+
+				$rootScope.$apply(function() {
+					$scope.showScoreboard = false;
+				});
+			}
+		})
 	})
 	.config(function($routeProvider, $sceProvider) {
 		$routeProvider.when("/", {
@@ -237,7 +310,8 @@ var app = angular.module("Valhalla", ["ngRoute"])
 			controller: "LobbyController"
 		})
 		.when("/game/:gameID", {
-			templateUrl: "static/game.html"
+			templateUrl: "static/game.html",
+			controller: "GameController"
 		});
 
 		$sceProvider.enabled(false);

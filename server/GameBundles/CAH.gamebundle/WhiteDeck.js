@@ -9,6 +9,8 @@ var shuffle = function (a) {
 		a[i] = a[j];
 		a[j] = t;
 	}
+
+	return a;
 }
 
 var WhiteDeck = function (sets, blanksInDeck) {
@@ -35,7 +37,7 @@ var WhiteDeck = function (sets, blanksInDeck) {
 					}
 				});
 
-				shuffle(deck);
+				deck = shuffle(deck);
 				hasFinishedLoading = true;
 			})
 		});

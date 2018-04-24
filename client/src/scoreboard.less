@@ -1,0 +1,56 @@
+.scoreboard {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	width: 1024px;
+	max-width: calc(~"100% - 100px");
+	min-height: 100px;
+	transform: translate3d(-50%, -50%, 0);
+	z-index: 50;
+	border-radius: 25px;
+	-webkit-backdrop-filter: blur(20px);
+	box-shadow: 0 0 0 1px #ccc, 1px 26px 22px rgba(0, 0, 0, 0.07);
+	background-color: rgba(230, 230, 230,0.4);
+	transition: transform 0.2s ease-out, opacity 0.15s ease-out, visibility 0.3s linear;
+	padding: 15px;
+
+	&:not(.visible) {
+		opacity: 0;
+		transform: translate3d(-50%, -50%, 0) scale(0.9);
+		visibility: hidden;
+	}
+
+	h1 {
+		overflow: hidden;
+		text-overflow: ellipsis;
+		white-space: nowrap;
+	}
+
+	table {
+		width: 100%;
+		margin-top: 15px;
+
+		tr {
+
+			th {
+				text-align: left;
+				font-size: 13px;
+				font-weight: 500;
+			}
+			th, td {
+				&:nth-child(1) {
+					width: 50%;
+				}
+
+				&:nth-child(2),
+				&:nth-child(3) {
+					width: 25%;
+				}
+			}
+			td {
+				line-height: 50px;
+				font-size: 22px;
+			}
+		}
+	}
+}
