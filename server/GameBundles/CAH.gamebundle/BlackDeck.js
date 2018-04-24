@@ -62,8 +62,8 @@ var BlackDeck = function(sets) {
 			cards.push(blackDeck.getNextCard());
 		}
 
-		var blankBlackCard = new BlackCard("blank-black", "_", "0", true);
-		cards.push(blankBlackCard);
+		//var blankBlackCard = new BlackCard("blank-black", "_", "0", true);
+		//cards.push(blankBlackCard);
 
 		return cards;
 	}

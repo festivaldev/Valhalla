@@ -267,8 +267,20 @@
 				</div>
 			</div>
 
-			<button class="confirm" ng-if="currentGame.state == 2 && socket.id != currentGame.judge" ng-disabled="!gameLogic.selectedCard" ng-click="gameLogic.playCard(gameLogic.selectedCard)">Confirm Selection</button>
-			<p class="confirm" ng-if="currentGame.state == 2 && socket.id == currentGame.judge">You are the judge. Wait for the other players to select a card.</p>
+			<div ng-if="currentGame.state == 2">
+				<button class="confirm" ng-if="socket.id != currentGame.judge" ng-disabled="!gameLogic.selectedCard" ng-click="gameLogic.playCard(gameLogic.selectedCard)">Confirm Selection</button>
+
+				<p class="confirm" ng-if="socket.id == currentGame.judge">You are the judge. Wait for the other players to select a card.</p>
+			</div>
+
+			<div ng-if="currentGame.state == 3 && socket.id == currentGame.judge && currentGame.blackCard.append && currentGame.blackCards.length == 0">
+				<p class="confirm">You are the judge. Select a winning card.</p>
+				<button class="confirm" ng-disabled="!gameLogic.selectedCard" ng-click="gameLogic.judgeCard(gameLogic.selectedCard[0])">Confirm Selection</button>
+			</div>
+
+			<div ng-if="currentGame.state == 3 && socket.id != currentGame.judge && currentGame.blackCard.append && currentGame.blackCards.length == 0">
+				<p class="confirm">Wait for the judge to select a winning card.</p>
+			</div>
 		</div>
 		<div class="game-right">
 			<div class="played-cards" ng-if="currentGame.state == 2">
@@ -300,11 +312,15 @@
 		<button class="confirm" ng-disabled="!gameLogic.selectedCard" ng-click="gameLogic.judgeCard(gameLogic.selectedCard[0])">Confirm Selection</button>
 	</div>
 
-	<div ng-if="currentGame.state == 3 && socket.id == currentGame.judge && !currentGame.blackCard.append && currentGame.blackCards.length > 0">
+	<div ng-if="currentGame.state == 3 && socket.id != currentGame.judge && !currentGame.blackCard.append && currentGame.blackCards.length == 0">
+		<p class="confirm">Wait for the judge to select a winning card.</p>
+	</div>
+	
+	<div ng-if="currentGame.state == 3 && socket.id == currentGame.judge && currentGame.blackCards.length > 0">
 		<p class="confirm">Select a card to be played in the next round.</p>
 		<button class="confirm"  ng-disabled="!gameLogic.selectedCard" ng-click="gameLogic.setBlackCard(gameLogic.selectedCard)">Confirm Selection</button>
 	</div>
-	
+
 	
 	<div class="card-holder" ng-disabled="currentGame.blackCard.pick <= 0 || currentGame.judge == socket.id || currentGame.state == 3">
 		<div class="card white-card" ng-repeat="card in currentGame.hand" ng-class="{'selected': gameLogic.selectedCard == card}" ng-click="gameLogic.selectedCard = card">
